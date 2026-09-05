@@ -12,9 +12,9 @@ O protótipo `_design-reference/*.jsx` do plugin Moodle é uma versão inicial/d
 
 Regra do usuário: o código Moodle é lido apenas como referência, nunca editado nem copiado literalmente. Isso inclui assets de terceiros (fontes, WASM) — sempre baixados de novo das fontes originais, nunca copiados da árvore do plugin Moodle. Ver `assets/fonts/THIRDPARTY.md`.
 
-## D3 — Persistência: `localStorage` para todos na Fase 1, `usermeta` na Fase 2
+## D3 — Persistência: `localStorage` para visitantes, `usermeta` via REST para logados
 
-Sem REST API ainda (Fase 2), então mesmo usuários logados só têm a preferência salva por navegador (`localStorage`), não sincronizada entre dispositivos. `WP_A11y\Manager::get_current_user_settings()`/`save_user_settings()` já leem/escrevem um único `usermeta` JSON (mesma forma que o Moodle usa via `user_preferences`), prontos para quando a Fase 2 acrescentar o endpoint REST que efetivamente os invoca a partir do navegador.
+Na Fase 1 (sem REST ainda), até usuário logado só tinha a preferência por navegador (`localStorage`). Na Fase 2, `assets/js/storage.js` passou a ramificar por `config.isLoggedIn`: logado usa `GET`/`POST /wp-a11y/v1/settings` (usermeta real, sincronizado entre dispositivos); visitante continua só `localStorage`. Migração automática de dados: se o servidor não tem preferência salva ainda (heurística: settings === defaults) e existe algo diferente de default no `localStorage`, esse valor é enviado ao servidor uma vez e o `localStorage` é limpo — mesmo comportamento do `storage.js` do Moodle.
 
 ## D4 — Isolamento visual do FAB/painel: wrapper `#wp-a11y-content-wrap`, não relocação via JS
 
@@ -33,3 +33,13 @@ Corrigido qualificando essas classes com o próprio ID (`#wp-a11y-fab.wp-a11y-fa
 ## D6 — Script Modules API nativa (WP 6.5+), sem bundler
 
 `wp_register_script_module()`/`wp_enqueue_script_module()` geram automaticamente um import map do navegador para os módulos ESM do plugin (`@wp-a11y/storage`, `@wp-a11y/effects` etc.), permitindo `import`/`import()` dinâmico nativo sem Webpack/Vite/grunt. Site já roda WordPress 7.1, então a API está disponível. Módulos avançados da Fase 3 devem usar `import()` dinâmico dentro de `panel.js` para lazy-load, mesmo padrão do `main.js` do Moodle.
+
+## D7 — `sanitize_key()` não serve para `featureid`
+
+O argumento REST `featureid` de `POST /wp-a11y/v1/activate` inicialmente usava `sanitize_key` como `sanitize_callback`. `sanitize_key()` **minúsculiza** a string (é feito para chaves de opção/meta, não para ids arbitrários) — `pauseAnimations` virava `pauseanimations`, que nunca batia com `Options::all_ids()` (todos camelCase), então `Stats::record_activation()` sempre retornava `false` silenciosamente (a rota respondia `200 {"recorded":false}`, sem erro nenhum). Trocado para `sanitize_text_field`, que preserva a caixa.
+
+Só foi encontrado testando a chamada de verdade (curl direto na rota + Chrome headless) e conferindo a tabela `wp_a11y_stats` no banco - a resposta HTTP 200 sozinha não denunciava o bug. Mesma lição do D5: sempre validar contra o estado real (banco, `getComputedStyle`), nunca só o código ou uma resposta "sem erro".
+
+## D8 — REST URL: `rest_url()` já resolve plain vs. pretty permalinks
+
+O site roda com permalinks "simples" (`permalink_structure` vazio), então `rest_url('wp-a11y/v1')` retorna `?rest_route=/wp-a11y/v1` em vez de `/wp-json/wp-a11y/v1`. O cliente (`storage.js`/`stats.js`) só concatena sufixos de path (`` `${config.restUrl}/settings` ``) sem nunca montar a URL base sozinho - funciona igual nos dois formatos, porque a concatenação simplesmente estende o valor do parâmetro `rest_route` quando os permalinks são simples. Nunca hardcode `/wp-json/...` em teste manual (`curl`) sem antes conferir `rest_url()` de verdade - foi exatamente isso que atrasou o diagnóstico do D7 (testes manuais batendo na URL errada pareciam indicar redirecionamento quebrado, quando na real a rota sempre funcionou).

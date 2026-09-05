@@ -25,6 +25,7 @@ class Plugin {
 		add_action( 'admin_init', array( Settings::class, 'register' ) );
 		add_action( 'admin_menu', array( Admin_Page::class, 'register' ) );
 		add_action( 'admin_menu', array( Stats_Page::class, 'register' ), 20 );
+		add_action( 'rest_api_init', array( Rest::class, 'register_routes' ) );
 
 		Assets::register();
 	}

@@ -258,21 +258,30 @@ class Render {
 	}
 
 	/**
-	 * Echo the synchronous no-FOUC script: applies known body classes from
-	 * localStorage before first paint (mirrors local_a11y's
-	 * render_nofouc_script(), but always reads localStorage for now since
-	 * server-side sync lands in Phase 2).
+	 * Echo the synchronous no-FOUC script: applies known body classes
+	 * before first paint (mirrors local_a11y's render_nofouc_script()).
+	 *
+	 * Logged-in users: the server already knows their real settings
+	 * (usermeta, synced via REST since Phase 2) - embed them directly, no
+	 * localStorage read needed. Guests: settings only ever live in
+	 * localStorage, read synchronously here same as Phase 1.
 	 */
 	public static function render_nofouc_script() {
+		$is_logged_in     = is_user_logged_in();
+		$server_settings   = $is_logged_in ? Manager::get_current_user_settings() : null;
 		?>
 		<script id="wp-a11y-nofouc">
 		(function () {
 			try {
-				var raw = window.localStorage.getItem( 'wp_a11y_settings' );
-				if ( ! raw ) {
-					return;
+				var serverSettings = <?php echo null === $server_settings ? 'null' : wp_json_encode( $server_settings ); ?>;
+				var settings = serverSettings;
+				if ( ! settings ) {
+					var raw = window.localStorage.getItem( 'wp_a11y_settings' );
+					if ( ! raw ) {
+						return;
+					}
+					settings = JSON.parse( raw );
 				}
-				var settings = JSON.parse( raw );
 				var classes = [];
 				var steppers = <?php echo wp_json_encode( Manager::get_stepper_max() ); ?>;
 				Object.keys( settings ).forEach( function ( id ) {
@@ -297,6 +306,24 @@ class Render {
 			}
 		})();
 		</script>
+		<?php
+	}
+
+	/**
+	 * Echo the JSON config the JS script modules read at runtime: REST base
+	 * URL + nonce, login state, and whether stats collection is enabled
+	 * (so the client can skip pointless activation calls when it's off,
+	 * mirroring local_a11y's `collectStatsEnabled` flag passed to main.js).
+	 */
+	public static function render_config_script() {
+		$config = array(
+			'restUrl'             => esc_url_raw( rest_url( 'wp-a11y/v1' ) ),
+			'nonce'               => wp_create_nonce( 'wp_rest' ),
+			'isLoggedIn'          => is_user_logged_in(),
+			'collectStatsEnabled' => Settings::collect_stats_enabled(),
+		);
+		?>
+		<script type="application/json" id="wp-a11y-config"><?php echo wp_json_encode( $config ); ?></script>
 		<?php
 	}
 

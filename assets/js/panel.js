@@ -8,19 +8,34 @@
 import * as Storage from '@wp-a11y/storage';
 import * as Effects from '@wp-a11y/effects';
 import { applyProfile } from '@wp-a11y/profiles';
+import { recordActivation } from '@wp-a11y/stats';
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function readConfig() {
+	const el = document.getElementById( 'wp-a11y-config' );
+	if ( ! el ) {
+		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false };
+	}
+	try {
+		return JSON.parse( el.textContent );
+	} catch ( e ) {
+		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false };
+	}
+}
 
 /**
  * Wire up the whole widget. Call once, after the FAB/panel HTML exists.
  */
-export function init() {
+export async function init() {
 	const fab = document.getElementById( 'wp-a11y-fab' );
 	const panel = document.getElementById( 'wp-a11y-panel' );
 
 	if ( ! fab || ! panel ) {
 		return;
 	}
+
+	const config = readConfig();
 
 	const optionMeta = Array.from( panel.querySelectorAll( '.wp-a11y-option' ) ).map( ( el ) => ( {
 		id: el.dataset.optionId,
@@ -30,7 +45,7 @@ export function init() {
 	} ) );
 
 	const defaults = Storage.getDefaultSettings( optionMeta );
-	let settings = Storage.getSettings( optionMeta );
+	let settings = await Storage.getSettings( optionMeta, config );
 	let activeProfileId = null;
 
 	const badge = document.getElementById( 'wp-a11y-fab-badge' );
@@ -102,50 +117,70 @@ export function init() {
 		} );
 	}
 
-	function commit() {
-		Effects.apply( settings, optionMeta );
-		Storage.saveSettings( settings );
-		render();
+	function recordNewActivations( previous, current ) {
+		if ( ! config.collectStatsEnabled ) {
+			return;
+		}
+		optionMeta.forEach( ( option ) => {
+			const defaultValue = defaults[ option.id ];
+			const wasActive = previous[ option.id ] !== defaultValue;
+			const isActive = current[ option.id ] !== defaultValue;
+			if ( ! wasActive && isActive ) {
+				recordActivation( option.id, config );
+			}
+		} );
 	}
 
-	// Initial hydration: apply whatever localStorage actually holds (may
-	// differ from the server-rendered defaults - Phase 2 will sync this
-	// server-side for logged-in users instead).
-	commit();
+	function commit( previousSettings ) {
+		Effects.apply( settings, optionMeta );
+		render();
+		Storage.saveSettings( settings, config );
+		if ( previousSettings ) {
+			recordNewActivations( previousSettings, settings );
+		}
+	}
+
+	// Initial hydration: apply whatever the effective settings are (server
+	// usermeta for logged-in users, localStorage for guests - see storage.js).
+	commit( null );
 
 	fab.addEventListener( 'click', () => togglePanel() );
 
 	document.getElementById( 'wp-a11y-panel-close' ).addEventListener( 'click', () => closePanel() );
 
 	document.getElementById( 'wp-a11y-panel-reset' ).addEventListener( 'click', () => {
+		const previous = { ...settings };
 		settings = { ...defaults };
 		activeProfileId = null;
-		commit();
+		commit( previous );
 	} );
 
 	panel.addEventListener( 'click', ( event ) => {
 		const toggleBtn = event.target.closest( '.wp-a11y-toggle' );
 		if ( toggleBtn ) {
+			const previous = { ...settings };
 			const id = toggleBtn.dataset.optionId;
 			settings[ id ] = ! settings[ id ];
 			activeProfileId = null;
-			commit();
+			commit( previous );
 			return;
 		}
 
 		const stepperBtn = event.target.closest( '.wp-a11y-stepper' );
 		if ( stepperBtn ) {
+			const previous = { ...settings };
 			const id = stepperBtn.dataset.optionId;
 			const max = parseInt( stepperBtn.dataset.max, 10 ) || 0;
 			const current = parseInt( settings[ id ], 10 ) || 0;
 			settings[ id ] = ( current + 1 ) % ( max + 1 );
 			activeProfileId = null;
-			commit();
+			commit( previous );
 			return;
 		}
 
 		const profileBtn = event.target.closest( '.wp-a11y-profile' );
 		if ( profileBtn ) {
+			const previous = { ...settings };
 			const id = profileBtn.dataset.profileId;
 			if ( activeProfileId === id ) {
 				settings = { ...defaults };
@@ -155,7 +190,7 @@ export function init() {
 				settings = applyProfile( defaults, applyMap );
 				activeProfileId = id;
 			}
-			commit();
+			commit( previous );
 			return;
 		}
 

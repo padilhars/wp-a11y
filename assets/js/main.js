@@ -6,4 +6,4 @@
 
 import { init } from '@wp-a11y/panel';
 
-init();
+await init();

@@ -81,9 +81,16 @@ class Assets {
 		);
 
 		wp_register_script_module(
+			'@wp-a11y/stats',
+			WP_A11Y_URL . 'assets/js/stats.js',
+			array(),
+			WP_A11Y_VERSION
+		);
+
+		wp_register_script_module(
 			'@wp-a11y/panel',
 			WP_A11Y_URL . 'assets/js/panel.js',
-			array( '@wp-a11y/storage', '@wp-a11y/effects', '@wp-a11y/profiles' ),
+			array( '@wp-a11y/storage', '@wp-a11y/effects', '@wp-a11y/profiles', '@wp-a11y/stats' ),
 			WP_A11Y_VERSION
 		);
 
@@ -135,6 +142,7 @@ class Assets {
 		}
 
 		echo '</div><!-- #wp-a11y-content-wrap -->';
+		Render::render_config_script();
 		Render::render_widget();
 	}
 }

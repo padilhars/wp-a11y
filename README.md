@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fase 0 + Fase 1 concluídas.**
+**Fases 0, 1 e 2 concluídas.**
 
 Fase 0 (esqueleto de dados):
 
@@ -16,10 +16,18 @@ Fase 1 (FAB + painel + efeitos CSS puros):
 
 - Botão flutuante + painel (popover/gaveta/modal conforme configuração; sempre gaveta em telas pequenas), com busca, perfis, categorias colapsáveis, atalho `Alt+A`, `Esc` fecha, focus trap.
 - 19 das 29 opções têm efeito visual real via classes `body.a11y-*` (`assets/css/a11y-effects.css`): tipografia (incl. 3 fontes OFL auto-hospedadas — Atkinson Hyperlegible, Lexend, OpenDyslexic), cores/contraste (incl. simulação de daltonismo via filtros SVG `feColorMatrix`), mídia (ocultar imagens/pausar animações) e foco/navegação (cursor, modo foco). As 10 restantes (leitor de tela, teclado virtual, comandos de voz, navegação por face, guia/máscara de leitura, lupa, tooltips, pausar mídia, leitura biônica) são módulos JS ainda não implementados (Fase 3) — o toggle muda de estado mas ainda não tem efeito visível.
-- Persistência **apenas via `localStorage`** por enquanto (para todo mundo, inclusive logado) — sincronização por usuário via REST/`usermeta` é a Fase 2. Script no-FOUC (`wp_body_open`) aplica o estado salvo antes da 1ª pintura.
+- Persistência via `localStorage` para visitantes; usuários logados agora sincronizam de verdade com o servidor (Fase 2, abaixo). Script no-FOUC (`wp_body_open`) aplica o estado salvo antes da 1ª pintura.
 - Testado com Chrome headless real: FAB/painel renderizam e funcionam, toggles/perfis/persistência/reload confirmados sem erros de console.
 
-Ainda faltam: REST API de sincronização por usuário, relatório de estatísticas alimentado de verdade (sem endpoint de ativação ainda), e os 10 módulos avançados — ver as fases seguintes no plano de port.
+Fase 2 (REST API + estatísticas):
+
+- `GET`/`POST /wp-json/wp-a11y/v1/settings` (autenticado, nonce `wp_rest`): usuário logado lê/escreve sua preferência real em `usermeta`, sincronizada entre dispositivos. Migração automática de qualquer preferência de visitante salva em `localStorage` no primeiro login sem preferência salva ainda.
+- Script no-FOUC agora embute a preferência **real** do usuário logado (lida direto do `usermeta` no PHP) em vez de sempre depender do `localStorage` — elimina o flash de FOUC que a Fase 1 ainda tinha para quem já estava logado.
+- `POST /wp-json/wp-a11y/v1/activate`: contador de ativação por opção, mesma validação/allowlist server-side de antes (Fase 0), agora de fato alimentado pelo painel — disparado (fire-and-forget) sempre que uma opção passa de padrão→ativa, só quando a coleta de estatísticas está ligada.
+- Relatório de estatísticas (`/wp-admin/admin.php?page=wp-a11y-stats`) agora mostra dados reais.
+- Testado ponta a ponta com Chrome headless real (login incluso): sincronização de preferência, reidratação sem FOUC após reload, e contador de estatísticas confirmados direto no banco.
+
+Ainda faltam: os 10 módulos avançados (leitor de tela, teclado virtual, comandos de voz, navegação por face, guia/máscara de leitura, lupa, tooltips, pausar/silenciar mídia, leitura biônica) — ver Fase 3 no plano de port.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 
