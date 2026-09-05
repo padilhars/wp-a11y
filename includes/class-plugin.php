@@ -25,5 +25,7 @@ class Plugin {
 		add_action( 'admin_init', array( Settings::class, 'register' ) );
 		add_action( 'admin_menu', array( Admin_Page::class, 'register' ) );
 		add_action( 'admin_menu', array( Stats_Page::class, 'register' ), 20 );
+
+		Assets::register();
 	}
 }

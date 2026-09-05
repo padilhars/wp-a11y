@@ -43,7 +43,11 @@ class Options {
 	 * All 29 accessibility options.
 	 *
 	 * Each entry: id, cat, kind ('toggle'|'stepper'), icon, labelkey, desckey
-	 * (nullable), hashelp (bool), max (stepper only), levelprefix (stepper only).
+	 * (nullable), hashelp (bool), max (stepper only), levelprefix (stepper
+	 * only), effect ('css' = implemented in Phase 1 via body classes in
+	 * assets/css/a11y-effects.css; 'js' = Phase 3, an as-yet-unimplemented
+	 * JS-mounted overlay/behavior module - toggling it updates state/count
+	 * but has no visible effect yet).
 	 *
 	 * @return array<int, array<string, mixed>>
 	 */
@@ -57,6 +61,7 @@ class Options {
 				'labelkey' => 'option_readablefont',
 				'desckey'  => null,
 				'hashelp'  => false,
+				'effect'   => 'css',
 			),
 			array(
 				'id'          => 'dyslexicFont',
@@ -68,36 +73,40 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 2,
 				'levelprefix' => 'dyslexicfont_level',
+				'effect'      => 'css',
 			),
 			array(
-				'id'       => 'highlightTitles',
-				'cat'      => 'typography',
-				'kind'     => 'toggle',
-				'icon'     => 'heading',
-				'labelkey' => 'option_highlighttitles',
-				'desckey'  => null,
-				'hashelp'  => false,
+				'id'         => 'highlightTitles',
+				'cat'        => 'typography',
+				'kind'       => 'toggle',
+				'icon'       => 'heading',
+				'labelkey'   => 'option_highlighttitles',
+				'desckey'    => null,
+				'hashelp'    => false,
 				'admincolor' => 'highlighttitlescolor',
+				'effect'     => 'css',
 			),
 			array(
-				'id'       => 'highlightLinks',
-				'cat'      => 'typography',
-				'kind'     => 'toggle',
-				'icon'     => 'link',
-				'labelkey' => 'option_highlightlinks',
-				'desckey'  => null,
-				'hashelp'  => false,
+				'id'         => 'highlightLinks',
+				'cat'        => 'typography',
+				'kind'       => 'toggle',
+				'icon'       => 'link',
+				'labelkey'   => 'option_highlightlinks',
+				'desckey'    => null,
+				'hashelp'    => false,
 				'admincolor' => 'highlightlinkscolor',
+				'effect'     => 'css',
 			),
 			array(
-				'id'       => 'highlightButtons',
-				'cat'      => 'typography',
-				'kind'     => 'toggle',
-				'icon'     => 'squareButton',
-				'labelkey' => 'option_highlightbuttons',
-				'desckey'  => null,
-				'hashelp'  => false,
+				'id'         => 'highlightButtons',
+				'cat'        => 'typography',
+				'kind'       => 'toggle',
+				'icon'       => 'squareButton',
+				'labelkey'   => 'option_highlightbuttons',
+				'desckey'    => null,
+				'hashelp'    => false,
 				'admincolor' => 'highlightbuttonscolor',
+				'effect'     => 'css',
 			),
 			array(
 				'id'          => 'textSize',
@@ -109,6 +118,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 4,
 				'levelprefix' => 'textsize_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'lineHeight',
@@ -120,6 +130,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'lineheight_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'textSpacing',
@@ -131,6 +142,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'textspacing_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'wordSpacing',
@@ -142,6 +154,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'wordspacing_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'textAlign',
@@ -153,6 +166,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 4,
 				'levelprefix' => 'textalign_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'       => 'bionicReading',
@@ -162,6 +176,7 @@ class Options {
 				'labelkey' => 'option_bionicreading',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'          => 'contrast',
@@ -173,6 +188,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'contrast_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'       => 'invertColors',
@@ -182,6 +198,7 @@ class Options {
 				'labelkey' => 'option_invertcolors',
 				'desckey'  => null,
 				'hashelp'  => false,
+				'effect'   => 'css',
 			),
 			array(
 				'id'          => 'colorChange',
@@ -193,6 +210,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'colorchange_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'saturation',
@@ -204,6 +222,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'saturation_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'blueLightFilter',
@@ -215,6 +234,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'bluelightfilter_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'       => 'hideImages',
@@ -224,6 +244,7 @@ class Options {
 				'labelkey' => 'option_hideimages',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'css',
 			),
 			array(
 				'id'       => 'pauseAnimations',
@@ -233,6 +254,7 @@ class Options {
 				'labelkey' => 'option_pauseanimations',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'css',
 			),
 			array(
 				'id'       => 'silenceMedia',
@@ -242,6 +264,7 @@ class Options {
 				'labelkey' => 'option_silencemedia',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'       => 'tooltips',
@@ -251,16 +274,18 @@ class Options {
 				'labelkey' => 'option_tooltips',
 				'desckey'  => null,
 				'hashelp'  => false,
+				'effect'   => 'js',
 			),
 			array(
-				'id'       => 'readingGuide',
-				'cat'      => 'navigation',
-				'kind'     => 'toggle',
-				'icon'     => 'ruler',
-				'labelkey' => 'option_readingguide',
-				'desckey'  => null,
-				'hashelp'  => true,
+				'id'         => 'readingGuide',
+				'cat'        => 'navigation',
+				'kind'       => 'toggle',
+				'icon'       => 'ruler',
+				'labelkey'   => 'option_readingguide',
+				'desckey'    => null,
+				'hashelp'    => true,
 				'admincolor' => 'readingguidecolor',
+				'effect'     => 'js',
 			),
 			array(
 				'id'       => 'readingMask',
@@ -270,6 +295,7 @@ class Options {
 				'labelkey' => 'option_readingmask',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'       => 'magnifier',
@@ -279,6 +305,7 @@ class Options {
 				'labelkey' => 'option_magnifier',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'          => 'cursor',
@@ -290,6 +317,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 2,
 				'levelprefix' => 'cursor_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'          => 'focusMode',
@@ -301,6 +329,7 @@ class Options {
 				'hashelp'     => false,
 				'max'         => 3,
 				'levelprefix' => 'focusmode_level',
+				'effect'      => 'css',
 			),
 			array(
 				'id'       => 'screenReader',
@@ -310,6 +339,7 @@ class Options {
 				'labelkey' => 'option_screenreader',
 				'desckey'  => 'option_screenreader_desc',
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'       => 'virtualKeyboard',
@@ -319,6 +349,7 @@ class Options {
 				'labelkey' => 'option_virtualkeyboard',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'       => 'voiceCommands',
@@ -328,6 +359,7 @@ class Options {
 				'labelkey' => 'option_voicecommands',
 				'desckey'  => null,
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 			array(
 				'id'       => 'faceNavigation',
@@ -337,6 +369,7 @@ class Options {
 				'labelkey' => 'option_facenavigation',
 				'desckey'  => 'option_facenavigation_desc',
 				'hashelp'  => true,
+				'effect'   => 'js',
 			),
 		);
 	}
@@ -379,5 +412,16 @@ class Options {
 		}
 
 		return $groups;
+	}
+
+	/**
+	 * Convert a camelCase option id to the kebab-case token used in CSS
+	 * class names (e.g. `textSize` -> `text-size`).
+	 *
+	 * @param string $id Option id.
+	 * @return string
+	 */
+	public static function kebab( $id ) {
+		return strtolower( (string) preg_replace( '/([A-Z])/', '-$1', $id ) );
 	}
 }
