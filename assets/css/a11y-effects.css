@@ -284,3 +284,17 @@ body.a11y-focus-mode-3 #wp-a11y-content-wrap video {
 .a11y-bionic-wrap .a11y-bionic-b {
 	font-weight: 700;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Advanced (Phase 3, JS-mounted): screen reader hover outline             */
+/* ---------------------------------------------------------------------- */
+
+/*
+ * Applied/removed directly by assets/js/features/screen-reader.js on
+ * whichever element is currently hovered - no body.a11y-* gate needed.
+ */
+.a11y-screenreader-hover {
+	outline: 3px solid #3b82f6 !important;
+	outline-offset: 2px !important;
+	cursor: pointer !important;
+}

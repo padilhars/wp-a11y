@@ -25,6 +25,8 @@ const FEATURE_MODULES = {
 	readingGuide: 'reading-guide.js',
 	readingMask: 'reading-mask.js',
 	magnifier: 'magnifier.js',
+	screenReader: 'screen-reader.js',
+	virtualKeyboard: 'virtual-keyboard.js',
 };
 
 function readConfig() {

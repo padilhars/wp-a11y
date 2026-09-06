@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0, 1 e 2 concluídas; Fase 3 em andamento (6 de 10 módulos avançados).**
+**Fases 0, 1 e 2 concluídas; Fase 3 em andamento (8 de 10 módulos avançados).**
 
 Fase 0 (esqueleto de dados):
 
@@ -35,9 +35,11 @@ Fase 3 (módulos avançados, um de cada vez — em andamento):
 - **Guia de Leitura** (`readingGuide`): faixa horizontal destacada (cor configurável em Cores) que acompanha o mouse verticalmente, ajudando a manter a linha de leitura (`reading-guide.js`).
 - **Máscara de Leitura** (`readingMask`): duas faixas escurecidas acima/abaixo do cursor, isolando uma janela de leitura de ~120px (`reading-mask.js`).
 - **Lupa** (`magnifier`): lente circular que segue o mouse mostrando uma cópia ampliada (2,2×) do conteúdo sob o cursor — clona `#wp-a11y-content-wrap` uma vez e só reposiciona via `transform` a cada movimento (`magnifier.js`).
-- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, sem erro de console).
+- **Leitor de Tela** (`screenReader`): passar o mouse destaca qualquer texto da página (títulos, parágrafos, links, botões, etc.); clicar lê em voz alta via `speechSynthesis` nativo do navegador — nenhum áudio é enviado a lugar nenhum, é 100% processamento local do navegador (`screen-reader.js`).
+- **Teclado Virtual** (`virtualKeyboard`): aparece automaticamente ao focar um campo de texto dentro do conteúdo da página; digita usando `execCommand('insertText'/'delete')`, que preserva posição do cursor e dispara os eventos `input` reais (`virtual-keyboard.js`).
+- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, digitação de verdade num campo de teste, sem erro de console).
 
-Ainda faltam 4 módulos: leitor de tela (Web Speech API), teclado virtual, comandos de voz (SpeechRecognition + aviso de privacidade), navegação por face (MediaPipe) — ver Fase 3 no plano de port.
+Ainda faltam 2 módulos, os mais sensíveis do ponto de vista de privacidade: comandos de voz (SpeechRecognition + aviso de privacidade obrigatório) e navegação por face (MediaPipe, com verificação de integridade do modelo baixado) — ver Fase 3 no plano de port.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 

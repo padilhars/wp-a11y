@@ -510,3 +510,99 @@
 	font-size: 0.8em;
 	white-space: nowrap;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Screen Reader status pill (assets/js/features/screen-reader.js)         */
+/* ---------------------------------------------------------------------- */
+
+.wp-a11y-screenreader-status {
+	all: initial;
+	position: fixed;
+	left: 50%;
+	bottom: 24px;
+	transform: translateX( -50% );
+	z-index: 999997;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	max-width: min( 480px, calc( 100vw - 40px ) );
+	padding: 10px 16px;
+	border-radius: 999px;
+	background: #1f2937;
+	color: #fff;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+	font-size: 14px;
+	box-shadow: 0 6px 20px rgba( 0, 0, 0, 0.35 );
+}
+.wp-a11y-screenreader-status[hidden] { display: none; }
+.wp-a11y-screenreader-status__text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.wp-a11y-screenreader-status__stop {
+	all: unset;
+	cursor: pointer;
+	flex: 0 0 auto;
+	padding: 4px 12px;
+	border-radius: 999px;
+	background: #dc2626;
+	color: #fff;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Virtual Keyboard (assets/js/features/virtual-keyboard.js)               */
+/* ---------------------------------------------------------------------- */
+
+.wp-a11y-virtual-keyboard {
+	all: initial;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 999997;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px;
+	background: #1f2937;
+	box-shadow: 0 -6px 20px rgba( 0, 0, 0, 0.3 );
+}
+.wp-a11y-virtual-keyboard[hidden] { display: none; }
+
+.wp-a11y-vk-row {
+	display: flex;
+	gap: 4px;
+	justify-content: center;
+}
+
+.wp-a11y-vk-key {
+	all: unset;
+	box-sizing: border-box;
+	cursor: pointer;
+	min-width: 34px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	background: #374151;
+	color: #fff;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+	font-size: 15px;
+	text-transform: none;
+}
+.wp-a11y-vk-key:hover,
+.wp-a11y-vk-key:focus-visible {
+	background: #4b5563;
+	outline: 2px solid #93c5fd;
+}
+.wp-a11y-vk-key.is-active {
+	background: var( --wp-a11y-accent, #3b82f6 );
+}
+.wp-a11y-vk-key--space { flex: 1 1 auto; max-width: 320px; }
+.wp-a11y-vk-key--backspace,
+.wp-a11y-vk-key--enter,
+.wp-a11y-vk-key--shift { min-width: 56px; }
