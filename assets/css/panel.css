@@ -119,6 +119,66 @@
 .wp-a11y-tooltip-bubble[hidden] { display: none; }
 
 /* ---------------------------------------------------------------------- */
+/* Reading Guide feature (assets/js/features/reading-guide.js)             */
+/* ---------------------------------------------------------------------- */
+
+.wp-a11y-reading-guide {
+	all: initial;
+	position: fixed;
+	left: 0;
+	right: 0;
+	height: 36px;
+	z-index: 999996;
+	pointer-events: none;
+	background: color-mix( in srgb, var( --wp-a11y-readingguide, #3b82f6 ) 22%, transparent );
+	border-top: 2px solid var( --wp-a11y-readingguide, #3b82f6 );
+	border-bottom: 2px solid var( --wp-a11y-readingguide, #3b82f6 );
+}
+.wp-a11y-reading-guide[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------- */
+/* Reading Mask feature (assets/js/features/reading-mask.js)               */
+/* ---------------------------------------------------------------------- */
+
+.wp-a11y-reading-mask {
+	all: initial;
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 999995;
+	pointer-events: none;
+	background: rgba( 0, 0, 0, 0.65 );
+}
+.wp-a11y-reading-mask--top { top: 0; }
+.wp-a11y-reading-mask--bottom { bottom: 0; }
+.wp-a11y-reading-mask[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------- */
+/* Magnifier feature (assets/js/features/magnifier.js)                     */
+/* ---------------------------------------------------------------------- */
+
+.wp-a11y-magnifier-lens {
+	all: initial;
+	position: fixed;
+	z-index: 999996;
+	pointer-events: none;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 4px solid #fff;
+	background: #fff;
+	box-shadow: 0 6px 20px rgba( 0, 0, 0, 0.4 );
+}
+.wp-a11y-magnifier-clone {
+	all: unset;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: 0 0;
+	pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Panel shell                                                             */
 /* ---------------------------------------------------------------------- */
 

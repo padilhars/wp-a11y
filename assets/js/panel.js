@@ -22,6 +22,9 @@ const FEATURE_MODULES = {
 	tooltips: 'tooltips.js',
 	silenceMedia: 'silence-media.js',
 	bionicReading: 'bionic-reading.js',
+	readingGuide: 'reading-guide.js',
+	readingMask: 'reading-mask.js',
+	magnifier: 'magnifier.js',
 };
 
 function readConfig() {

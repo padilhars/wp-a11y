@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0, 1 e 2 concluídas; Fase 3 em andamento (3 de 10 módulos avançados).**
+**Fases 0, 1 e 2 concluídas; Fase 3 em andamento (6 de 10 módulos avançados).**
 
 Fase 0 (esqueleto de dados):
 
@@ -32,9 +32,12 @@ Fase 3 (módulos avançados, um de cada vez — em andamento):
 - **Dicas de Ferramentas** (`tooltips`): converte `[title]` nativo (pequeno, com atraso, só no mouse) numa dica visível também por foco de teclado (`assets/js/features/tooltips.js`).
 - **Silenciar Mídia** (`silenceMedia`): muta todo `<audio>`/`<video>` da página, incluindo mídia que começa a tocar depois de ativado; restaura o estado original ao desativar (`silence-media.js`).
 - **Leitura Biônica** (`bionicReading`): negrita a primeira metade de cada palavra do conteúdo real da página, reversível sem perder o texto original (`bionic-reading.js`).
-- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, sem erro de console).
+- **Guia de Leitura** (`readingGuide`): faixa horizontal destacada (cor configurável em Cores) que acompanha o mouse verticalmente, ajudando a manter a linha de leitura (`reading-guide.js`).
+- **Máscara de Leitura** (`readingMask`): duas faixas escurecidas acima/abaixo do cursor, isolando uma janela de leitura de ~120px (`reading-mask.js`).
+- **Lupa** (`magnifier`): lente circular que segue o mouse mostrando uma cópia ampliada (2,2×) do conteúdo sob o cursor — clona `#wp-a11y-content-wrap` uma vez e só reposiciona via `transform` a cada movimento (`magnifier.js`).
+- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, sem erro de console).
 
-Ainda faltam 7 módulos: guia/máscara de leitura, lupa, leitor de tela (Web Speech API), teclado virtual, comandos de voz (SpeechRecognition + aviso de privacidade), navegação por face (MediaPipe) — ver Fase 3 no plano de port.
+Ainda faltam 4 módulos: leitor de tela (Web Speech API), teclado virtual, comandos de voz (SpeechRecognition + aviso de privacidade), navegação por face (MediaPipe) — ver Fase 3 no plano de port.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 
