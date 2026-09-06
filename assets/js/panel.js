@@ -12,15 +12,27 @@ import { recordActivation } from '@wp-a11y/stats';
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/**
+ * Option id -> feature module filename, for the "advanced" options whose
+ * effect is a JS-mounted module rather than a body class. Only imported
+ * (once, cached, by full URL - see syncAdvancedFeatures()) the first time
+ * the option is actually turned on. Grows as Phase 3 adds more modules.
+ */
+const FEATURE_MODULES = {
+	tooltips: 'tooltips.js',
+	silenceMedia: 'silence-media.js',
+	bionicReading: 'bionic-reading.js',
+};
+
 function readConfig() {
 	const el = document.getElementById( 'wp-a11y-config' );
 	if ( ! el ) {
-		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false };
+		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false, featuresUrl: '' };
 	}
 	try {
 		return JSON.parse( el.textContent );
 	} catch ( e ) {
-		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false };
+		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false, featuresUrl: '' };
 	}
 }
 
@@ -47,17 +59,51 @@ export async function init() {
 	const defaults = Storage.getDefaultSettings( optionMeta );
 	let settings = await Storage.getSettings( optionMeta, config );
 	let activeProfileId = null;
+	const loadedFeatureModules = {};
 
 	const badge = document.getElementById( 'wp-a11y-fab-badge' );
 	const status = document.getElementById( 'wp-a11y-panel-status' );
 	const search = document.getElementById( 'wp-a11y-search' );
 
+	function isOptionActive( id ) {
+		const meta = optionMeta.find( ( option ) => option.id === id );
+		if ( ! meta ) {
+			return false;
+		}
+		const value = settings[ id ];
+		return meta.kind === 'stepper' ? ( parseInt( value, 10 ) || 0 ) > 0 : value === true;
+	}
+
 	function countActive() {
 		return optionMeta.reduce( ( count, option ) => {
-			const value = settings[ option.id ];
-			const active = option.kind === 'stepper' ? ( parseInt( value, 10 ) || 0 ) > 0 : value === true;
-			return active ? count + 1 : count;
+			return isOptionActive( option.id ) ? count + 1 : count;
 		}, 0 );
+	}
+
+	/**
+	 * Dynamic-import each Phase 3 feature module on its option's first real
+	 * activation (never before), then keep it in sync on every commit.
+	 * Always re-reads the CURRENT live active state inside the `.then()`
+	 * (not a value captured before the import started) so a user rapidly
+	 * toggling an option on then off before the import resolves still ends
+	 * up with the correct final state - same race guard as local_a11y's
+	 * `wantActive` in main.js.
+	 */
+	function syncAdvancedFeatures() {
+		Object.keys( FEATURE_MODULES ).forEach( ( id ) => {
+			const active = isOptionActive( id );
+			if ( ! loadedFeatureModules[ id ] ) {
+				if ( ! active ) {
+					return;
+				}
+				loadedFeatureModules[ id ] = import( `${ config.featuresUrl }${ FEATURE_MODULES[ id ] }` );
+			}
+			loadedFeatureModules[ id ]
+				.then( ( mod ) => mod.sync( isOptionActive( id ) ) )
+				.catch( () => {
+					delete loadedFeatureModules[ id ];
+				} );
+		} );
 	}
 
 	function render() {
@@ -134,6 +180,7 @@ export async function init() {
 	function commit( previousSettings ) {
 		Effects.apply( settings, optionMeta );
 		render();
+		syncAdvancedFeatures();
 		Storage.saveSettings( settings, config );
 		if ( previousSettings ) {
 			recordNewActivations( previousSettings, settings );

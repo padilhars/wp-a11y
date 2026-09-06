@@ -87,6 +87,17 @@ class Assets {
 			WP_A11Y_VERSION
 		);
 
+		// Phase 3 "advanced" feature modules are NOT registered here at all.
+		// panel.js dynamic-`import()`s each one by its full resolved URL
+		// (built from `pluginUrl` in the config script - see
+		// Render::render_config_script()), not a bare specifier, precisely
+		// so no import-map entry is needed. A bare specifier would require
+		// either enqueueing the module (forcing WordPress to eagerly print
+		// a <script type="module"> for it - defeating lazy-loading) or
+		// declaring it a dependency of something enqueued (same problem,
+		// since WP prints a tag for every dependency of an enqueued
+		// module too). A plain URL string needs no import map at all.
+
 		wp_register_script_module(
 			'@wp-a11y/panel',
 			WP_A11Y_URL . 'assets/js/panel.js',

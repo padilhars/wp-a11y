@@ -45,9 +45,11 @@ class Options {
 	 * Each entry: id, cat, kind ('toggle'|'stepper'), icon, labelkey, desckey
 	 * (nullable), hashelp (bool), max (stepper only), levelprefix (stepper
 	 * only), effect ('css' = implemented in Phase 1 via body classes in
-	 * assets/css/a11y-effects.css; 'js' = Phase 3, an as-yet-unimplemented
-	 * JS-mounted overlay/behavior module - toggling it updates state/count
-	 * but has no visible effect yet).
+	 * assets/css/a11y-effects.css; 'js' = a JS-mounted overlay/behavior
+	 * module, dynamic-imported by assets/js/panel.js's FEATURE_MODULES map
+	 * on first activation - being implemented progressively in Phase 3, see
+	 * README.md for which ones are done; until an id's module exists,
+	 * toggling it updates state/count but has no visible effect).
 	 *
 	 * @return array<int, array<string, mixed>>
 	 */

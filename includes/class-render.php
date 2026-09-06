@@ -321,6 +321,10 @@ class Render {
 			'nonce'               => wp_create_nonce( 'wp_rest' ),
 			'isLoggedIn'          => is_user_logged_in(),
 			'collectStatsEnabled' => Settings::collect_stats_enabled(),
+			// Full URL (not a bare specifier) so panel.js can dynamic-
+			// import() Phase 3 feature modules without needing an import
+			// map entry for each one - see class-assets.php.
+			'featuresUrl'         => esc_url_raw( WP_A11Y_URL . 'assets/js/features/' ),
 		);
 		?>
 		<script type="application/json" id="wp-a11y-config"><?php echo wp_json_encode( $config ); ?></script>

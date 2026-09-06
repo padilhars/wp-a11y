@@ -271,3 +271,16 @@ body.a11y-focus-mode-3 #wp-a11y-content-wrap picture,
 body.a11y-focus-mode-3 #wp-a11y-content-wrap video {
 	visibility: hidden !important;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Advanced (Phase 3, JS-mounted): bionic reading                          */
+/* ---------------------------------------------------------------------- */
+
+/*
+ * No body.a11y-* gate needed here - assets/js/features/bionic-reading.js
+ * only creates these wrapper spans while the option is active, and removes
+ * them (restoring the plain text node) when it's turned off.
+ */
+.a11y-bionic-wrap .a11y-bionic-b {
+	font-weight: 700;
+}
