@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0-5 concluídas — v1.0.2.**
+**Fases 0-5 concluídas — v1.0.3.**
 
 Fase 0 (esqueleto de dados):
 
@@ -60,6 +60,8 @@ Fase 5 (polimento/documentação):
 **v1.0.1** — paridade visual com o painel do `local_a11y` (Moodle): ícones/descrições/botões de ajuda das opções (já existiam nos dados desde a Fase 0, mas nunca chegavam ao HTML - `includes/class-icons.php` novo), cabeçalho/categorias/perfis com o mesmo tratamento visual (selo, versalete, ícone), fonte `Inter` auto-hospedada. Ver DECISIONS.md D14.
 
 **v1.0.2** — categorias agora colapsam de verdade (bug de CSS: `display` incondicional empatando com `[hidden]`) e opções ativam clicando em qualquer parte da linha, não só no switch/stepper. Ver DECISIONS.md D15.
+
+**v1.0.3** — steppers agora mostram o nome do nível ativo (ex.: "Lexend", "Alto Contraste") em vez de uma fração genérica ("1/2"). Ver DECISIONS.md D16.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 

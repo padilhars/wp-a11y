@@ -100,6 +100,91 @@ class Render {
 	}
 
 	/**
+	 * Per-level labels for every stepper option, index 0 (default) through
+	 * `max`. Without this, a stepper's displayed value has nothing more
+	 * meaningful to show than a bare "N/max" fraction, which says nothing
+	 * about what level N actually does.
+	 *
+	 * @return array<string, array<int, string>>
+	 */
+	public static function option_level_labels() {
+		return array(
+			'textSize'        => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Pequeno', 'wp-a11y' ),
+				__( 'Médio', 'wp-a11y' ),
+				__( 'Grande', 'wp-a11y' ),
+				__( 'Máximo', 'wp-a11y' ),
+			),
+			'lineHeight'      => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( '1.5×', 'wp-a11y' ),
+				__( '1.8×', 'wp-a11y' ),
+				__( '2.2×', 'wp-a11y' ),
+			),
+			'textSpacing'     => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Leve', 'wp-a11y' ),
+				__( 'Médio', 'wp-a11y' ),
+				__( 'Amplo', 'wp-a11y' ),
+			),
+			'wordSpacing'     => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Leve', 'wp-a11y' ),
+				__( 'Médio', 'wp-a11y' ),
+				__( 'Amplo', 'wp-a11y' ),
+			),
+			'textAlign'       => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Esquerda', 'wp-a11y' ),
+				__( 'Centralizado', 'wp-a11y' ),
+				__( 'Direita', 'wp-a11y' ),
+				__( 'Justificado', 'wp-a11y' ),
+			),
+			'dyslexicFont'    => array(
+				__( 'Desligado', 'wp-a11y' ),
+				__( 'Lexend', 'wp-a11y' ),
+				__( 'OpenDyslexic', 'wp-a11y' ),
+			),
+			'contrast'        => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Escuro', 'wp-a11y' ),
+				__( 'Claro', 'wp-a11y' ),
+				__( 'Alto', 'wp-a11y' ),
+			),
+			'colorChange'     => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Protanopia', 'wp-a11y' ),
+				__( 'Deuteranopia', 'wp-a11y' ),
+				__( 'Tritanopia', 'wp-a11y' ),
+			),
+			'saturation'      => array(
+				__( 'Normal', 'wp-a11y' ),
+				__( 'Alta', 'wp-a11y' ),
+				__( 'Baixa', 'wp-a11y' ),
+				__( 'Mono', 'wp-a11y' ),
+			),
+			'blueLightFilter' => array(
+				__( 'Desligado', 'wp-a11y' ),
+				__( 'Sutil', 'wp-a11y' ),
+				__( 'Médio', 'wp-a11y' ),
+				__( 'Forte', 'wp-a11y' ),
+			),
+			'cursor'          => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Grande preto', 'wp-a11y' ),
+				__( 'Grande branco', 'wp-a11y' ),
+			),
+			'focusMode'       => array(
+				__( 'Padrão', 'wp-a11y' ),
+				__( 'Sem distrações', 'wp-a11y' ),
+				__( 'Leitura confortável', 'wp-a11y' ),
+				__( 'Somente texto', 'wp-a11y' ),
+			),
+		);
+	}
+
+	/**
 	 * Human-readable labels for every category id.
 	 *
 	 * @return array<string, string>
@@ -143,6 +228,7 @@ class Render {
 		$labels       = self::option_labels();
 		$descs        = self::option_desc_labels();
 		$help         = self::option_help_content();
+		$level_labels = self::option_level_labels();
 		$cat_labels   = self::category_labels();
 		$cat_icons    = Icons::category_icons();
 		$default_open = Options::category_default_open();
@@ -156,23 +242,28 @@ class Render {
 				$is_step = ( 'stepper' === $option['kind'] );
 				$value   = isset( $settings[ $id ] ) ? $settings[ $id ] : ( $is_step ? 0 : false );
 				$hashelp = ! $is_step && ! empty( $option['hashelp'] ) && isset( $help[ $id ] );
+				$levels  = $is_step && isset( $level_labels[ $id ] ) ? $level_labels[ $id ] : array();
 
 				$rows[] = array(
-					'id'        => $id,
-					'kind'      => $option['kind'],
-					'isstepper' => $is_step,
-					'istoggle'  => ! $is_step,
-					'iconsvg'   => Icons::svg( $option['icon'], 18 ),
-					'label'     => isset( $labels[ $id ] ) ? $labels[ $id ] : $id,
-					'desc'      => isset( $descs[ $id ] ) ? $descs[ $id ] : null,
-					'cat'       => $cat_id,
-					'effect'    => $option['effect'],
-					'max'       => $is_step ? (int) $option['max'] : 0,
-					'value'     => $is_step ? (int) $value : 0,
-					'active'    => $is_step ? ( (int) $value > 0 ) : (bool) $value,
-					'hashelp'   => $hashelp,
-					'helplabel' => $hashelp ? __( 'Ajuda', 'wp-a11y' ) : null,
-					'helptext'  => $hashelp ? $help[ $id ] : null,
+					'id'           => $id,
+					'kind'         => $option['kind'],
+					'isstepper'    => $is_step,
+					'istoggle'     => ! $is_step,
+					'iconsvg'      => Icons::svg( $option['icon'], 18 ),
+					'label'        => isset( $labels[ $id ] ) ? $labels[ $id ] : $id,
+					'desc'         => isset( $descs[ $id ] ) ? $descs[ $id ] : null,
+					'cat'          => $cat_id,
+					'effect'       => $option['effect'],
+					'max'          => $is_step ? (int) $option['max'] : 0,
+					'value'        => $is_step ? (int) $value : 0,
+					'active'       => $is_step ? ( (int) $value > 0 ) : (bool) $value,
+					'levellabels'  => $levels,
+					'currentlabel' => $is_step
+						? ( isset( $levels[ (int) $value ] ) ? $levels[ (int) $value ] : sprintf( '%d/%d', (int) $value, (int) $option['max'] ) )
+						: null,
+					'hashelp'      => $hashelp,
+					'helplabel'    => $hashelp ? __( 'Ajuda', 'wp-a11y' ) : null,
+					'helptext'     => $hashelp ? $help[ $id ] : null,
 				);
 			}
 

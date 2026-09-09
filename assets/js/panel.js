@@ -184,7 +184,16 @@ export async function init() {
 				const valueEl = row.querySelector( '.wp-a11y-stepper__value' );
 				button.classList.toggle( 'is-active', level > 0 );
 				button.dataset.value = String( level );
-				valueEl.textContent = level === 0 ? 'Padrão' : `${ level }/${ max }`;
+				// Per-level labels (e.g. "Lexend", "Alto") rendered server-side
+				// into data-levels - falls back to a bare fraction only if
+				// that's somehow missing, never as the normal case.
+				let levels = [];
+				try {
+					levels = JSON.parse( button.dataset.levels || '[]' );
+				} catch {
+					levels = [];
+				}
+				valueEl.textContent = levels[ level ] || `${ level }/${ max }`;
 				row.querySelectorAll( '.wp-a11y-stepper__dot' ).forEach( ( dot, index ) => {
 					dot.classList.toggle( 'is-filled', index < level );
 				} );

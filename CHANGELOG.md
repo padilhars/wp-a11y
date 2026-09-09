@@ -2,6 +2,14 @@
 
 Todas as mudanças notáveis do `wp-a11y` são documentadas aqui. Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [1.0.3] - 2026-09-09
+
+### Fixed
+
+- Opções com múltiplos níveis (steppers) mostravam uma fração genérica ("1/1", "2/3"...) em vez do nome do nível ativo (ex.: "Fonte para Dislexia" mostrando "1/1" em vez de "Lexend") - nunca existia um mapeamento nível→nome no lado WP, nem no render inicial (PHP) nem na atualização ao vivo depois de um clique (JS). Adicionado `Render::option_level_labels()` cobrindo as 12 opções que são steppers.
+
+Ver DECISIONS.md D16.
+
 ## [1.0.2] - 2026-09-09
 
 ### Fixed

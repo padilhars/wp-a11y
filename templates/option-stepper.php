@@ -2,7 +2,8 @@
 /**
  * A single stepper (multi-level) option row.
  *
- * Expects: $option (array: id, iconsvg, label, desc, value, max, active, effect).
+ * Expects: $option (array: id, iconsvg, label, desc, value, max, active,
+ * effect, levellabels, currentlabel).
  *
  * @package WP_A11y
  */
@@ -25,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		data-option-id="<?php echo esc_attr( $option['id'] ); ?>"
 		data-max="<?php echo esc_attr( $option['max'] ); ?>"
 		data-value="<?php echo esc_attr( $option['value'] ); ?>"
+		data-levels="<?php echo esc_attr( wp_json_encode( $option['levellabels'] ) ); ?>"
 		aria-label="<?php echo esc_attr( $option['label'] ); ?>"
 	>
 		<span class="wp-a11y-stepper__dots" aria-hidden="true">
@@ -33,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endfor; ?>
 		</span>
 		<span class="wp-a11y-stepper__value">
-			<?php echo 0 === $option['value'] ? esc_html__( 'Padrão', 'wp-a11y' ) : esc_html( sprintf( '%d/%d', $option['value'], $option['max'] ) ); ?>
+			<?php echo esc_html( $option['currentlabel'] ); ?>
 		</span>
 	</button>
 </div>

@@ -40,6 +40,18 @@ O argumento REST `featureid` de `POST /wp-a11y/v1/activate` inicialmente usava `
 
 Só foi encontrado testando a chamada de verdade (curl direto na rota + Chrome headless) e conferindo a tabela `wp_a11y_stats` no banco - a resposta HTTP 200 sozinha não denunciava o bug. Mesma lição do D5: sempre validar contra o estado real (banco, `getComputedStyle`), nunca só o código ou uma resposta "sem erro".
 
+## D16 — Steppers mostravam "N/max" em vez do nome do nível ("Lexend", "Alto Contraste"...)
+
+Reportado pelo usuário: opções com múltiplos níveis (steppers) mostravam uma fração genérica ("1/1", "1/2"...) em vez do nome do nível ativo - exemplo dado, "Fonte para Dislexia" mostrando "1/1" em vez de "Lexend".
+
+**Causa**: nunca existiu nenhum mapeamento de nível→nome no lado WP. `option-stepper.php` e o `syncSteppers()`-equivalente em `panel.js` sempre mostraram `level === 0 ? 'Padrão' : \`${level}/${max}\`` - um placeholder que nunca foi substituído por texto de verdade, nas duas pontas (render inicial em PHP e atualização ao vivo em JS depois de um clique). Mesma classe de lacuna do D14 (dado nunca conectado), só que aqui o dado nem existia ainda - `class-options.php` tem `levelprefix` por stepper desde a Fase 0, mas nada nunca resolvia esse prefixo para um texto reAL, porque o wp-a11y não usa arquivos de idioma no formato `prefixo_N` do Moodle (usa `__()` direto em PHP).
+
+**Correção**: `Render::option_level_labels()` (novo) - um array literal por opção (0..max), escrito do zero em PHP, cobrindo as 12 opções que são steppers (`textSize`, `lineHeight`, `textSpacing`, `wordSpacing`, `textAlign`, `dyslexicFont`, `contrast`, `colorChange`, `saturation`, `blueLightFilter`, `cursor`, `focusMode`). Os nomes usados são os mesmos termos factuais e curtos que o `local_a11y` já usa para os mesmos níveis (ex.: "Lexend"/"OpenDyslexic", "Protanopia"/"Deuteranopia"/"Tritanopia") - não é texto criativo pra reescrever diferente, é a forma correta e natural de nomear cada nível, e reaproveitar os mesmos termos é literalmente o pedido original de paridade visual (D14).
+
+`build_categories()` agora calcula `currentlabel` (texto do nível atual, usado no render inicial) e `levellabels` (array completo, serializado em `data-levels` no botão do stepper) por linha. `panel.js` lê `data-levels` na sincronização ao vivo em vez do placeholder de fração - com fallback pra fração só se `data-levels` estiver ausente/vazio (nunca deveria acontecer nas 12 opções cobertas, mas evita quebrar visualmente se uma opção nova ganhar `kind: stepper` sem entrada correspondente aqui).
+
+**Verificado**: as 12 opções conferidas uma a uma, ciclando cada nível (inclusive o "dá a volta" de volta a 0) e comparando o texto exibido com a tabela de nomes esperada - render inicial (PHP, visitante sem preferência salva) E atualização ao vivo (JS, depois de clicar) testados separadamente. PHPCS/ESLint sem erros novos.
+
 ## D15 — Categorias não colapsavam de verdade; opções só ativavam clicando exatamente no switch/stepper
 
 Reportado pelo usuário depois do D14: (1) categorias não contraíam/expandiam ao clicar; (2) opções só ativavam clicando exatamente no botão/switch, não em qualquer parte da linha.
