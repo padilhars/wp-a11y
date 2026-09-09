@@ -100,7 +100,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 
 	<div class="wp-a11y-panel__footer">
-		<?php echo wp_kses_post( $footertext ); ?>
-		<p class="wp-a11y-panel__hint"><?php esc_html_e( 'Atalho: Alt + A', 'wp-a11y' ); ?></p>
+		<span class="wp-a11y-panel__footer-text">
+			<span class="wp-a11y-panel__footer-title"><?php echo wp_kses_post( $footertext ); ?></span>
+		</span>
+		<kbd class="wp-a11y-panel__footer-kbd"><?php esc_html_e( 'Alt+A', 'wp-a11y' ); ?></kbd>
 	</div>
 </div>

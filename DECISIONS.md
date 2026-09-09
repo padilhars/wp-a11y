@@ -40,6 +40,18 @@ O argumento REST `featureid` de `POST /wp-a11y/v1/activate` inicialmente usava `
 
 Só foi encontrado testando a chamada de verdade (curl direto na rota + Chrome headless) e conferindo a tabela `wp_a11y_stats` no banco - a resposta HTTP 200 sozinha não denunciava o bug. Mesma lição do D5: sempre validar contra o estado real (banco, `getComputedStyle`), nunca só o código ou uma resposta "sem erro".
 
+## D17 — Rodapé do painel não era idêntico ao do `local_a11y`
+
+Reportado pelo usuário depois do D14/D15/D16: o rodapé do painel ainda não batia com o do Moodle.
+
+**Diferenças reais encontradas**: (1) estrutura - `local-a11y-panel__footer` do Moodle é uma linha flex com texto à esquerda (`__footer-text` > `__footer-title`) e um badge `<kbd>` à direita (`__footer-kbd`, "Alt+A" sem espaços); o wp-a11y empilhava o texto configurável e um `<p>` com "Atalho: Alt + A" em duas linhas, sem o estilo de badge; (2) texto padrão - o D14 tinha trocado o texto default para "Feito com ❤️ para você." sem menção à UFPel (julgamento próprio na hora, não pedido do usuário) - revertido para o texto idêntico ao do Moodle, `<strong>UFPel</strong>` incluso, já que aqui é o mesmo contexto/organização dos dois lados e o pedido explícito agora é paridade, não genericidade.
+
+**Corrigido**: `templates/panel.php` reestruturado para o mesmo HTML (`.wp-a11y-panel__footer-text`/`-title`/`-kbd`); `panel.css` com o mesmo layout flex + badge (cores/tamanhos traduzidos para os tokens já usados no D14); `Settings::footer_text()` com o texto padrão idêntico ao `savetitle` do Moodle (`Desenvolvido com ❤️ pela <strong>UFPel</strong> para você.`); `.wp-a11y-panel__hint` (classe órfã, sem uso depois da reestruturação) removida.
+
+**Observação, não um bug**: o WordPress converte automaticamente o emoji ❤️ em `<img>` no DOM renderizado (`wp-emoji-release.js`, comportamento padrão da plataforma em qualquer texto da página, não específico deste plugin) - visualmente quase idêntico ao glifo nativo do Moodle, não haveria como nem por que suprimir isso sem desativar um recurso global do WordPress.
+
+**Verificado**: captura de tela comparada com o rodapé do Moodle - mesmo layout (texto+badge na mesma linha), mesmo texto ("UFPel" incluso), mesmo atalho ("Alt+A"). PHPCS sem erros novos; smoke test geral (29 opções únicas, sem erro de console) reconfirmado.
+
 ## D16 — Steppers mostravam "N/max" em vez do nome do nível ("Lexend", "Alto Contraste"...)
 
 Reportado pelo usuário: opções com múltiplos níveis (steppers) mostravam uma fração genérica ("1/1", "1/2"...) em vez do nome do nível ativo - exemplo dado, "Fonte para Dislexia" mostrando "1/1" em vez de "Lexend".

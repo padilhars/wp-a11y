@@ -2,6 +2,14 @@
 
 Todas as mudanças notáveis do `wp-a11y` são documentadas aqui. Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [1.0.4] - 2026-09-09
+
+### Fixed
+
+- Rodapé do painel não era idêntico ao do `local_a11y`: texto e atalho de teclado ficavam empilhados em duas linhas, sem o badge estilizado do Moodle. Reestruturado para o mesmo layout (texto à esquerda, badge "Alt+A" à direita, na mesma linha) e o mesmo texto padrão ("Desenvolvido com ❤️ pela **UFPel** para você.").
+
+Ver DECISIONS.md D17.
+
 ## [1.0.3] - 2026-09-09
 
 ### Fixed

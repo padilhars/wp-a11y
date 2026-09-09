@@ -281,7 +281,7 @@ class Settings {
 	public static function footer_text() {
 		$text = self::get()['footertext'];
 
-		return '' !== $text ? $text : __( 'Feito com ❤️ para você.', 'wp-a11y' );
+		return '' !== $text ? $text : __( 'Desenvolvido com ❤️ pela <strong>UFPel</strong> para você.', 'wp-a11y' );
 	}
 
 	/**
