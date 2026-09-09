@@ -27,6 +27,8 @@ const FEATURE_MODULES = {
 	magnifier: 'magnifier.js',
 	screenReader: 'screen-reader.js',
 	virtualKeyboard: 'virtual-keyboard.js',
+	voiceCommands: 'voice-commands.js',
+	faceNavigation: 'face-navigation.js',
 };
 
 function readConfig() {
@@ -86,6 +88,51 @@ export async function init() {
 	}
 
 	/**
+	 * Build the small API a feature module can use to drive the panel
+	 * itself - only voice-commands.js (running arbitrary spoken commands)
+	 * and face-navigation.js/voice-commands.js's `declineActivation` (when
+	 * the user declines the privacy consent dialog) currently need this;
+	 * the rest ignore the second argument `sync()` receives.
+	 *
+	 * @param {string} ownOptionId The id of the option this module belongs to.
+	 */
+	function buildFeatureActions( ownOptionId ) {
+		return {
+			openPanel: () => openPanel(),
+			closePanel: () => closePanel(),
+			togglePanel: () => togglePanel(),
+			getOption: ( id ) => settings[ id ],
+			getOptionMax: ( id ) => {
+				const meta = optionMeta.find( ( option ) => option.id === id );
+				return meta ? meta.max : 0;
+			},
+			setOption: ( id, value ) => {
+				if ( ! ( id in settings ) ) {
+					return;
+				}
+				const previous = { ...settings };
+				settings[ id ] = value;
+				activeProfileId = null;
+				commit( previous );
+			},
+			reset: () => {
+				const previous = { ...settings };
+				settings = { ...defaults };
+				activeProfileId = null;
+				commit( previous );
+			},
+			// Called by a module when the user declines its privacy consent
+			// dialog: turns its OWN option back off so the panel toggle
+			// never shows "on" for a feature that didn't actually start.
+			declineActivation: () => {
+				const previous = { ...settings };
+				settings[ ownOptionId ] = false;
+				commit( previous );
+			},
+		};
+	}
+
+	/**
 	 * Dynamic-import each Phase 3 feature module on its option's first real
 	 * activation (never before), then keep it in sync on every commit.
 	 * Always re-reads the CURRENT live active state inside the `.then()`
@@ -104,7 +151,7 @@ export async function init() {
 				loadedFeatureModules[ id ] = import( `${ config.featuresUrl }${ FEATURE_MODULES[ id ] }` );
 			}
 			loadedFeatureModules[ id ]
-				.then( ( mod ) => mod.sync( isOptionActive( id ) ) )
+				.then( ( mod ) => mod.sync( isOptionActive( id ), buildFeatureActions( id ) ) )
 				.catch( () => {
 					delete loadedFeatureModules[ id ];
 				} );

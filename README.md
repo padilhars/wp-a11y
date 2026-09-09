@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0, 1 e 2 concluídas; Fase 3 em andamento (8 de 10 módulos avançados).**
+**Fases 0-3 concluídas.**
 
 Fase 0 (esqueleto de dados):
 
@@ -15,7 +15,7 @@ Fase 0 (esqueleto de dados):
 Fase 1 (FAB + painel + efeitos CSS puros):
 
 - Botão flutuante + painel (popover/gaveta/modal conforme configuração; sempre gaveta em telas pequenas), com busca, perfis, categorias colapsáveis, atalho `Alt+A`, `Esc` fecha, focus trap.
-- 19 das 29 opções têm efeito visual real via classes `body.a11y-*` (`assets/css/a11y-effects.css`): tipografia (incl. 3 fontes OFL auto-hospedadas — Atkinson Hyperlegible, Lexend, OpenDyslexic), cores/contraste (incl. simulação de daltonismo via filtros SVG `feColorMatrix`), mídia (ocultar imagens/pausar animações) e foco/navegação (cursor, modo foco). As 10 restantes (leitor de tela, teclado virtual, comandos de voz, navegação por face, guia/máscara de leitura, lupa, tooltips, pausar mídia, leitura biônica) são módulos JS ainda não implementados (Fase 3) — o toggle muda de estado mas ainda não tem efeito visível.
+- 19 das 29 opções têm efeito visual real via classes `body.a11y-*` (`assets/css/a11y-effects.css`): tipografia (incl. 3 fontes OFL auto-hospedadas — Atkinson Hyperlegible, Lexend, OpenDyslexic), cores/contraste (incl. simulação de daltonismo via filtros SVG `feColorMatrix`), mídia (ocultar imagens/pausar animações) e foco/navegação (cursor, modo foco). As 10 restantes são módulos JS sob demanda, completados na Fase 3 abaixo.
 - Persistência via `localStorage` para visitantes; usuários logados agora sincronizam de verdade com o servidor (Fase 2, abaixo). Script no-FOUC (`wp_body_open`) aplica o estado salvo antes da 1ª pintura.
 - Testado com Chrome headless real: FAB/painel renderizam e funcionam, toggles/perfis/persistência/reload confirmados sem erros de console.
 
@@ -27,7 +27,7 @@ Fase 2 (REST API + estatísticas):
 - Relatório de estatísticas (`/wp-admin/admin.php?page=wp-a11y-stats`) agora mostra dados reais.
 - Testado ponta a ponta com Chrome headless real (login incluso): sincronização de preferência, reidratação sem FOUC após reload, e contador de estatísticas confirmados direto no banco.
 
-Fase 3 (módulos avançados, um de cada vez — em andamento):
+Fase 3 (módulos avançados, um de cada vez — concluída, 10/10):
 
 - **Dicas de Ferramentas** (`tooltips`): converte `[title]` nativo (pequeno, com atraso, só no mouse) numa dica visível também por foco de teclado (`assets/js/features/tooltips.js`).
 - **Silenciar Mídia** (`silenceMedia`): muta todo `<audio>`/`<video>` da página, incluindo mídia que começa a tocar depois de ativado; restaura o estado original ao desativar (`silence-media.js`).
@@ -37,9 +37,9 @@ Fase 3 (módulos avançados, um de cada vez — em andamento):
 - **Lupa** (`magnifier`): lente circular que segue o mouse mostrando uma cópia ampliada (2,2×) do conteúdo sob o cursor — clona `#wp-a11y-content-wrap` uma vez e só reposiciona via `transform` a cada movimento (`magnifier.js`).
 - **Leitor de Tela** (`screenReader`): passar o mouse destaca qualquer texto da página (títulos, parágrafos, links, botões, etc.); clicar lê em voz alta via `speechSynthesis` nativo do navegador — nenhum áudio é enviado a lugar nenhum, é 100% processamento local do navegador (`screen-reader.js`).
 - **Teclado Virtual** (`virtualKeyboard`): aparece automaticamente ao focar um campo de texto dentro do conteúdo da página; digita usando `execCommand('insertText'/'delete')`, que preserva posição do cursor e dispara os eventos `input` reais (`virtual-keyboard.js`).
-- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, digitação de verdade num campo de teste, sem erro de console).
-
-Ainda faltam 2 módulos, os mais sensíveis do ponto de vista de privacidade: comandos de voz (SpeechRecognition + aviso de privacidade obrigatório) e navegação por face (MediaPipe, com verificação de integridade do modelo baixado) — ver Fase 3 no plano de port.
+- **Comandos por Voz** (`voiceCommands`): controla o painel e ~35 comandos falados (tipografia, cores, navegação, rolagem) via `SpeechRecognition` nativo do navegador — o áudio é enviado a um serviço remoto do próprio navegador (não deste site), por isso exige aviso de privacidade e consentimento explícito antes de começar, com uma pílula de status/feedback na tela (`voice-commands.js`).
+- **Navegação por Face** (`faceNavigation`): move um cursor virtual com movimentos da cabeça e "clica" abrindo a boca ou piscando, via MediaPipe FaceLandmarker rodando 100% no navegador — a imagem da câmera nunca é enviada a lugar nenhum. Os dois arquivos de terceiros necessários (bundle de visão + modelo) são baixados ao vivo e verificados por SHA-256 antes do uso, fechando o mesmo gap TOCTOU que o `local_a11y` trata; exige aviso de privacidade/consentimento antes de pedir acesso à câmera (`face-navigation.js`).
+- Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, digitação de verdade num campo de teste, sem erro de console) — Comandos por Voz e Navegação por Face testados com `SpeechRecognition`/câmera e MediaPipe simulados (mock), já que o ambiente de CI/headless não tem microfone/câmera reais nem pode validar o hash de um modelo de verdade sem rede liberada para o CDN. Ver DECISIONS.md D10 sobre um falso alarme de bug encontrado (e descartado) durante esse teste.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 
