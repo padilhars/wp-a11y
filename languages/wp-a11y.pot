@@ -1,0 +1,434 @@
+# Copyright (C) 2026 padilhars
+# This file is distributed under the GPL v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP A11y 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-a11y\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-09T20:14:42+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wp-a11y\n"
+
+#. Plugin Name of the plugin
+#: wp-a11y.php
+msgid "WP A11y"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: wp-a11y.php
+msgid "https://github.com/padilhars/wp-a11y"
+msgstr ""
+
+#. Description of the plugin
+#: wp-a11y.php
+msgid "Plugin de acessibilidade para WordPress, port do local_a11y (Moodle)."
+msgstr ""
+
+#. Author of the plugin
+#: wp-a11y.php
+msgid "padilhars"
+msgstr ""
+
+#: includes/class-admin-page.php:26
+#: includes/class-admin-page.php:27
+#: includes/class-admin-page.php:47
+msgid "Acessibilidade (A11y)"
+msgstr ""
+
+#: includes/class-admin-page.php:51
+#: includes/class-settings.php:84
+msgid "Geral"
+msgstr ""
+
+#: includes/class-admin-page.php:54
+msgid "Ativar plugin"
+msgstr ""
+
+#: includes/class-admin-page.php:58
+msgid "Mostrar o botão de acessibilidade no site."
+msgstr ""
+
+#: includes/class-admin-page.php:63
+msgid "Mostrar para visitantes"
+msgstr ""
+
+#: includes/class-admin-page.php:67
+msgid "Também exibir para usuários não autenticados."
+msgstr ""
+
+#: includes/class-admin-page.php:72
+msgid "Páginas excluídas"
+msgstr ""
+
+#: includes/class-admin-page.php:75
+msgid "Um padrão de URL por linha; use * como curinga."
+msgstr ""
+
+#: includes/class-admin-page.php:79
+msgid "Opções disponíveis"
+msgstr ""
+
+#: includes/class-admin-page.php:97
+#: includes/class-settings.php:85
+msgid "Botão Flutuante (FAB)"
+msgstr ""
+
+#: includes/class-admin-page.php:100
+msgid "Posição"
+msgstr ""
+
+#: includes/class-admin-page.php:110
+msgid "Ícone"
+msgstr ""
+
+#: includes/class-admin-page.php:120
+msgid "Formato"
+msgstr ""
+
+#: includes/class-admin-page.php:131
+#: includes/class-settings.php:86
+msgid "Painel"
+msgstr ""
+
+#: includes/class-admin-page.php:134
+msgid "Formato (telas maiores)"
+msgstr ""
+
+#: includes/class-admin-page.php:144
+msgid "Densidade"
+msgstr ""
+
+#: includes/class-admin-page.php:154
+#: templates/panel.php:57
+msgid "Perfis"
+msgstr ""
+
+#: includes/class-admin-page.php:158
+msgid "Mostrar a seção de perfis prontos."
+msgstr ""
+
+#: includes/class-admin-page.php:163
+msgid "Texto do rodapé"
+msgstr ""
+
+#: includes/class-admin-page.php:170
+#: includes/class-settings.php:87
+msgid "Cores"
+msgstr ""
+
+#: includes/class-admin-page.php:174
+msgid "Acento do botão/painel"
+msgstr ""
+
+#: includes/class-admin-page.php:175
+#: includes/class-render.php:31
+msgid "Destacar Títulos"
+msgstr ""
+
+#: includes/class-admin-page.php:176
+#: includes/class-render.php:32
+msgid "Destacar Links"
+msgstr ""
+
+#: includes/class-admin-page.php:177
+#: includes/class-render.php:33
+msgid "Destacar Botões"
+msgstr ""
+
+#: includes/class-admin-page.php:178
+#: includes/class-render.php:49
+msgid "Guia de Leitura"
+msgstr ""
+
+#: includes/class-admin-page.php:191
+#: includes/class-settings.php:88
+msgid "Estatísticas"
+msgstr ""
+
+#: includes/class-admin-page.php:194
+msgid "Coletar estatísticas de uso"
+msgstr ""
+
+#: includes/class-admin-page.php:198
+msgid "Contadores agregados e anônimos de ativação por opção, desligado por padrão."
+msgstr ""
+
+#: includes/class-privacy.php:59
+msgid "Este site usa o plugin WP A11y para oferecer opções de acessibilidade."
+msgstr ""
+
+#: includes/class-privacy.php:60
+msgid "Se você estiver logado, suas preferências de acessibilidade escolhidas (por exemplo, tamanho de texto, contraste, filtros de cor) são salvas associadas à sua conta, para que sejam lembradas em qualquer dispositivo. Se você não estiver logado, essas preferências ficam salvas apenas no seu próprio navegador (localStorage) e nunca chegam a este site."
+msgstr ""
+
+#: includes/class-privacy.php:61
+msgid "Duas opções, quando ativadas voluntariamente por você, fazem seu próprio navegador conversar diretamente com um serviço de terceiros - este site não envia, recebe ou armazena esse conteúdo:"
+msgstr ""
+
+#: includes/class-privacy.php:63
+msgid "\"Comandos por Voz\": o áudio captado pelo seu microfone é enviado pelo próprio navegador a um serviço remoto de reconhecimento de fala operado pelo fabricante do navegador (ex.: Google, no Chrome), não por este site."
+msgstr ""
+
+#: includes/class-privacy.php:64
+msgid "\"Navegação por Face\": a imagem da câmera é processada inteiramente no seu navegador e nunca é enviada a lugar nenhum; para isso, o navegador baixa dois arquivos de um provedor de terceiros (MediaPipe), verificados antes do uso."
+msgstr ""
+
+#: includes/class-privacy.php:66
+msgid "Opcionalmente, o administrador deste site pode ativar uma contagem agregada e anônima de quais opções de acessibilidade são mais usadas - esse contador nunca identifica quem o ativou."
+msgstr ""
+
+#: includes/class-privacy.php:80
+#: includes/class-privacy.php:146
+msgid "WP A11y - Preferências de Acessibilidade"
+msgstr ""
+
+#: includes/class-privacy.php:120
+msgid "ativado"
+msgstr ""
+
+#: includes/class-privacy.php:120
+msgid "desativado"
+msgstr ""
+
+#: includes/class-privacy.php:128
+msgid "Preferências de Acessibilidade (WP A11y)"
+msgstr ""
+
+#: includes/class-render.php:29
+msgid "Fonte Legível"
+msgstr ""
+
+#: includes/class-render.php:30
+msgid "Fonte para Dislexia"
+msgstr ""
+
+#: includes/class-render.php:34
+msgid "Tamanho do Texto"
+msgstr ""
+
+#: includes/class-render.php:35
+msgid "Altura da Linha"
+msgstr ""
+
+#: includes/class-render.php:36
+msgid "Espaçamento do Texto"
+msgstr ""
+
+#: includes/class-render.php:37
+msgid "Espaçamento entre Palavras"
+msgstr ""
+
+#: includes/class-render.php:38
+msgid "Alinhamento do Texto"
+msgstr ""
+
+#: includes/class-render.php:39
+msgid "Leitura Biônica"
+msgstr ""
+
+#: includes/class-render.php:40
+msgid "Contraste"
+msgstr ""
+
+#: includes/class-render.php:41
+msgid "Inverter Cores"
+msgstr ""
+
+#: includes/class-render.php:42
+msgid "Mudar Cores"
+msgstr ""
+
+#: includes/class-render.php:43
+msgid "Saturação"
+msgstr ""
+
+#: includes/class-render.php:44
+msgid "Filtro de Luz Azul"
+msgstr ""
+
+#: includes/class-render.php:45
+msgid "Ocultar Imagens"
+msgstr ""
+
+#: includes/class-render.php:46
+msgid "Pausar Animações"
+msgstr ""
+
+#: includes/class-render.php:47
+msgid "Silenciar Mídia"
+msgstr ""
+
+#: includes/class-render.php:48
+msgid "Dicas de Ferramentas"
+msgstr ""
+
+#: includes/class-render.php:50
+msgid "Máscara de Leitura"
+msgstr ""
+
+#: includes/class-render.php:51
+msgid "Lupa"
+msgstr ""
+
+#: includes/class-render.php:52
+msgid "Cursor"
+msgstr ""
+
+#: includes/class-render.php:53
+msgid "Modo Foco"
+msgstr ""
+
+#: includes/class-render.php:54
+msgid "Leitor de Tela"
+msgstr ""
+
+#: includes/class-render.php:55
+msgid "Teclado Virtual"
+msgstr ""
+
+#: includes/class-render.php:56
+msgid "Comandos por Voz"
+msgstr ""
+
+#: includes/class-render.php:57
+msgid "Navegação por Face"
+msgstr ""
+
+#: includes/class-render.php:68
+msgid "Texto e Tipografia"
+msgstr ""
+
+#: includes/class-render.php:69
+msgid "Cores e Contraste"
+msgstr ""
+
+#: includes/class-render.php:70
+msgid "Mídia e Animação"
+msgstr ""
+
+#: includes/class-render.php:71
+msgid "Foco e Navegação"
+msgstr ""
+
+#: includes/class-render.php:72
+msgid "Recursos Avançados"
+msgstr ""
+
+#: includes/class-render.php:83
+msgid "Baixa Visão"
+msgstr ""
+
+#: includes/class-render.php:84
+msgid "Daltonismo"
+msgstr ""
+
+#: includes/class-render.php:85
+msgid "Dislexia"
+msgstr ""
+
+#: includes/class-render.php:86
+msgid "TDAH/Foco"
+msgstr ""
+
+#: includes/class-render.php:87
+msgid "Idoso/Sênior"
+msgstr ""
+
+#: includes/class-render.php:88
+msgid "Epilepsia"
+msgstr ""
+
+#: includes/class-render.php:89
+msgid "Deficiência Motora"
+msgstr ""
+
+#: includes/class-render.php:90
+msgid "Cognitivo"
+msgstr ""
+
+#: includes/class-render.php:91
+msgid "Modo Noturno"
+msgstr ""
+
+#: includes/class-settings.php:284
+msgid "Suas preferências são salvas automaticamente."
+msgstr ""
+
+#: includes/class-stats-page.php:27
+#: includes/class-stats-page.php:28
+#: includes/class-stats-page.php:46
+msgid "Estatísticas de uso"
+msgstr ""
+
+#: includes/class-stats-page.php:47
+msgid "Contadores agregados e anônimos de ativação por opção. Nenhum identificador de usuário, sessão ou IP é armazenado."
+msgstr ""
+
+#: includes/class-stats-page.php:50
+msgid "A coleta de estatísticas está desligada em Geral > Estatísticas."
+msgstr ""
+
+#: includes/class-stats-page.php:56
+msgid "Opção"
+msgstr ""
+
+#: includes/class-stats-page.php:57
+msgid "Ativações"
+msgstr ""
+
+#: includes/class-stats-page.php:58
+msgid "Última atualização"
+msgstr ""
+
+#: includes/class-stats-page.php:63
+msgid "Nenhum dado ainda."
+msgstr ""
+
+#: templates/fab.php:27
+msgid "Abrir opções de acessibilidade"
+msgstr ""
+
+#: templates/option-stepper.php:30
+msgid "Padrão"
+msgstr ""
+
+#: templates/panel.php:26
+msgid "Acessibilidade"
+msgstr ""
+
+#: templates/panel.php:27
+msgid "Fechar"
+msgstr ""
+
+#. translators: %d: number of active accessibility options.
+#: templates/panel.php:36
+#, php-format
+msgid "%d opção ativa"
+msgid_plural "%d opções ativas"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/panel.php:41
+msgid "Nenhuma opção ativa"
+msgstr ""
+
+#: templates/panel.php:45
+msgid "Redefinir"
+msgstr ""
+
+#: templates/panel.php:50
+msgid "Buscar opção"
+msgstr ""
+
+#: templates/panel.php:51
+msgid "Buscar…"
+msgstr ""
+
+#: templates/panel.php:93
+msgid "Atalho: Alt + A"
+msgstr ""

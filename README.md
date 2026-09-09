@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0-4 concluídas.**
+**Fases 0-5 concluídas — v1.0.0.**
 
 Fase 0 (esqueleto de dados):
 
@@ -49,7 +49,22 @@ Fase 4 (privacidade + auditoria de segurança/qualidade):
 - **XSS do JSON inline** (`class-render.php`): já seguro por construção — os únicos dados de usuário embutidos em `<script>` (a preferência do usuário logado, no script anti-FOUC) já passam por `Manager::sanitize_settings()`, que só produz booleanos e inteiros limitados por opção, nunca uma string livre; não havia nada para um atacante injetar independentemente da forma de escaping usada.
 - Ver DECISIONS.md D12 para o relato completo da auditoria.
 
+Fase 5 (polimento/documentação):
+
+- `CHANGELOG.md` (novo) - histórico de todas as fases, formato [Keep a Changelog](https://keepachangelog.com/).
+- `languages/wp-a11y.pot` (novo) - template de tradução gerado via `wp i18n make-pot`, 101 strings.
+- Capturas de tela reais (`docs/screenshots/`, ver abaixo) - painel, perfis, categorias e um efeito realmente aplicado (não só mockup).
+- Versão promovida de `0.1.0` para `1.0.0` - mesmo critério do `local_a11y` (D65 lá): cortar uma versão de verdade num marco significativo (Fases 0-5 completas) em vez de deixar acumulando como "não lançado" indefinidamente.
+- Empacotamento: `bin/build-zip.sh` (novo) gera `wp-a11y.zip` pronto para instalar via wp-admin, excluindo arquivos só de desenvolvimento (`.git`, `DECISIONS.md`, `docs/`, `bin/`).
+
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
+
+## Capturas de tela
+
+| | |
+|---|---|
+| ![FAB](docs/screenshots/fab.png) Botão flutuante | ![Painel com perfis e tipografia](docs/screenshots/panel-profiles-typography.png) Painel: perfis + categoria de tipografia |
+| ![Painel com cores e mídia](docs/screenshots/panel-color-media.png) Painel: cores/contraste + mídia | ![Efeitos aplicados](docs/screenshots/effects-active.png) Alto contraste + fonte para dislexia aplicados de verdade |
 
 ## Ambiente de desenvolvimento
 

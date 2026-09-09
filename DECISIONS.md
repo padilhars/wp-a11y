@@ -40,6 +40,18 @@ O argumento REST `featureid` de `POST /wp-a11y/v1/activate` inicialmente usava `
 
 Só foi encontrado testando a chamada de verdade (curl direto na rota + Chrome headless) e conferindo a tabela `wp_a11y_stats` no banco - a resposta HTTP 200 sozinha não denunciava o bug. Mesma lição do D5: sempre validar contra o estado real (banco, `getComputedStyle`), nunca só o código ou uma resposta "sem erro".
 
+## D13 — Fase 5: versão 1.0.0, capturas de tela reais, empacotamento sem instalar nada novo no sistema
+
+Fase 5 (polimento/documentação) do plano de port, a última.
+
+**Versão `0.1.0` → `1.0.0`**: mesmo critério já usado no `local_a11y` (D65 lá) - cortar uma versão de verdade num marco significativo (aqui, as Fases 0-5 completas) em vez de deixar acumulando indefinidamente como "não lançado". `0.1.0` nunca foi uma versão publicada de verdade, só o placeholder do esqueleto inicial (Fase 0).
+
+**Capturas de tela reais, não mockup**: 4 imagens (`docs/screenshots/`) tiradas com Chrome headless de verdade contra o site rodando - FAB fechado, painel com perfis + categoria de tipografia aberta, painel com cores/mídia abertas, e uma combinação de efeitos realmente aplicados (alto contraste + fonte para dislexia, capturada com o painel fechado para mostrar o resultado visual de verdade, não a UI de configuração). Ao tirar a 3ª, a categoria "Cores e Contraste" abria mas ficava fora da área visível do painel (que tem scroll interno) - corrigido com `scrollIntoView()` antes do screenshot, não just esperando mais tempo.
+
+**Atributos de clique do painel são diferentes dos do `local_a11y`**: ao automatizar essas capturas descobri que este plugin usa `data-category` (não `data-category-id`) nas seções, e que clicar em `[data-option-id]` sozinho atinge a **linha inteira** da opção (`.wp-a11y-option`, o `<div>` que só exibe o label), não o elemento clicável de verdade - o botão real é um filho com sua própria classe (`.wp-a11y-toggle` ou `.wp-a11y-stepper`, ambos também com o mesmo `data-option-id`), e é nele que `panel.js` escuta o clique (via `event.target.closest(...)` na delegação em `panel`). Diferente da estrutura do `local_a11y` (`role="button"` na linha inteira, D76 lá) - aqui a linha em si não é clicável, só o botão dentro dela. Documentado aqui porque não é óbvio a partir de uma leitura rápida do HTML gerado, e um teste automatizado que erre esse detalhe simplesmente não clica em nada, sem erro nenhum.
+
+**Empacotamento sem instalar nada novo no sistema**: `bin/build-zip.sh` (novo) monta um `wp-a11y.zip` pronto para "Adicionar novo plugin > Enviar plugin" no wp-admin, via `rsync` (exclui `.git`, `DECISIONS.md`, `docs/`, `bin/` - os mesmos padrões ancorados na raiz com `/` na frente, mesma lição do D13 do `local_a11y` sobre `--exclude` sem barra inicial capturar caminhos aninhados por engano) seguido de compressão. O comando `zip` não está instalado neste ambiente; em vez de instalá-lo (mudança de sistema fora do escopo do plugin), o script usa a extensão `ZipArchive` do próprio PHP via `php -r`, que já é uma dependência garantida de qualquer stack que rode este plugin. Verificado inspecionando o `.zip` gerado (`python3 zipfile`): todos os arquivos de runtime presentes, nenhum arquivo de desenvolvimento vazando.
+
 ## D12 — Fase 4: auditoria PHPCS (WordPress-Extra) + ESLint
 
 Ferramentas instaladas fora do repositório (`/tmp/a11y-qa/wp-a11y-cs`, `/tmp/a11y-qa/wp-a11y-eslint` - Composer/npm não fazem parte deste plugin, D6), rodadas contra `includes/*.php` e `assets/js/**/*.js`.
