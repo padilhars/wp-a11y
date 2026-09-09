@@ -2,6 +2,15 @@
 
 Todas as mudanças notáveis do `wp-a11y` são documentadas aqui. Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [1.0.2] - 2026-09-09
+
+### Fixed
+
+- Categorias não colapsavam visualmente ao clicar, mesmo o estado interno (`aria-expanded`/`hidden`) mudando corretamente - `.wp-a11y-category__options` declarava `display: flex` incondicional, que empatava em especificidade com `[hidden]` da folha de estilos do navegador e vencia por ordem de carregamento. Mesmo bug encontrado de bônus no badge do FAB (aparecia sempre com "0").
+- Opções só ativavam clicando exatamente no switch/stepper, não em qualquer parte da linha (ícone, texto, descrição) - diferente do painel do `local_a11y`, que já suporta isso. Corrigido delegando o clique pela linha inteira (`.wp-a11y-option`), exceto quando o clique é dentro de um bloco de ajuda aberto.
+
+Ver DECISIONS.md D15.
+
 ## [1.0.1] - 2026-09-09
 
 ### Fixed

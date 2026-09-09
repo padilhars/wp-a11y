@@ -40,6 +40,20 @@ O argumento REST `featureid` de `POST /wp-a11y/v1/activate` inicialmente usava `
 
 Só foi encontrado testando a chamada de verdade (curl direto na rota + Chrome headless) e conferindo a tabela `wp_a11y_stats` no banco - a resposta HTTP 200 sozinha não denunciava o bug. Mesma lição do D5: sempre validar contra o estado real (banco, `getComputedStyle`), nunca só o código ou uma resposta "sem erro".
 
+## D15 — Categorias não colapsavam de verdade; opções só ativavam clicando exatamente no switch/stepper
+
+Reportado pelo usuário depois do D14: (1) categorias não contraíam/expandiam ao clicar; (2) opções só ativavam clicando exatamente no botão/switch, não em qualquer parte da linha.
+
+**Achado 2 (clique só no controle)**: real, não uma percepção errada - `panel.js` delegava o clique checando `event.target.closest('.wp-a11y-toggle')`/`.closest('.wp-a11y-stepper')`, então clicar no ícone/label/descrição (irmãos do botão dentro de `.wp-a11y-option`, nunca filhos dele) nunca disparava nada. Isso nunca funcionou assim no wp-a11y, mesmo antes do D14 - só ficou mais perceptível com ícone/descrição agora visíveis, dando mais área "morta" na linha. Corrigido igualando ao comportamento do `local_a11y` (D76 lá: "clicar em qualquer lugar da linha funciona via delegação de evento"): a delegação agora usa `event.target.closest('.wp-a11y-option[data-kind]')` (a linha inteira, que já carrega `data-option-id`/`data-kind`/`data-max` desde os templates originais) em vez do botão interno - com uma exceção: clique dentro de um `.wp-a11y-help-block` aberto não ativa a opção (evita que selecionar/ler o texto de ajuda mude o estado por acidente). `cursor: pointer` adicionado à linha inteira para sinalizar isso visualmente.
+
+**Achado 1 (categoria não colapsa) - bug real, mesma classe do D14**: `.wp-a11y-category__options { display: flex; ... }` declarado sem condição nenhuma - com a mesma especificidade (0,1,0) do seletor de atributo `[hidden]` da folha de estilos do navegador (`[hidden] { display: none }`), e carregado DEPOIS dela na cascata, então sempre ganhava o empate e mantinha a categoria visível mesmo com o atributo `hidden` corretamente alternado no DOM pelo `panel.js` (confirmado: `aria-expanded`/`.hidden` mudavam certinho, só a exibição visual não acompanhava). Só foi encontrado batendo `getComputedStyle(...).display` antes/depois do clique, não só o atributo DOM - a mesma lição do D14 (o bug do selo de check dos perfis) se repetindo, porque não tinha ficado registrada aqui como um padrão a evitar em toda edição futura de CSS deste arquivo. Corrigido com `.wp-a11y-category__options[hidden] { display: none !important; }`.
+
+**Um terceiro bug do mesmo padrão, encontrado de bônus ao auditar todo o arquivo por essa causa**: `.wp-a11y-fab__badge` (o contador vermelho no canto do FAB) tinha exatamente o mesmo problema - `display: flex` incondicional, sem nenhum `[hidden]` correspondente, então o badge aparecia sempre com "0" mesmo com `hasactive` falso (visível em toda captura de tela desde o D14, sem eu ter notado). Mesma correção (`!important`).
+
+**Lição para qualquer CSS futuro deste arquivo**: toda vez que um elemento é mostrado/escondido via atributo `hidden` (não via classe), e sua regra base declara `display` sem condição, é obrigatório um `seletor[hidden] { display: none !important; }` correspondente - a ordem de carregamento da folha de estilos do navegador não pode ser assumida como garantia de vitória na cascata.
+
+**Verificado**: os 3 casos (colapso de categoria, ativação da linha inteira - clicando em ícone/label de um toggle E de um stepper, badge do FAB) testados via `getComputedStyle`/atributos reais, não só cliques programáticos - a mesma lição do D14 aplicada de forma mais rigorosa esta vez. PHPCS/ESLint sem erros novos. Comandos por Voz e Navegação por Face reconfirmados funcionando de ponta a ponta.
+
 ## D14 — Paridade visual com o painel do `local_a11y`: ícones, descrições e ajuda nunca chegavam ao HTML
 
 Pedido do usuário: os dois painéis (Moodle e WordPress) deveriam ser visualmente o mais parecidos possível, por identidade visual - só mudando o lado WordPress, nunca o Moodle.

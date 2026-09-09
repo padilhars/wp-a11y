@@ -266,23 +266,24 @@ export async function init() {
 			return;
 		}
 
-		const toggleBtn = event.target.closest( '.wp-a11y-toggle' );
-		if ( toggleBtn ) {
+		// The whole row is clickable (icon/label/desc included), not just the
+		// switch/stepper button itself - both templates already put
+		// data-option-id/data-kind/data-max on the outer .wp-a11y-option div,
+		// so reading from `optionRow` (not the inner button) covers a click
+		// anywhere on the row. Excludes .wp-a11y-help-btn (handled above) and
+		// clicks inside an open .wp-a11y-help-block (selecting/reading its
+		// text shouldn't also flip the switch).
+		const optionRow = event.target.closest( '.wp-a11y-option[data-kind]' );
+		if ( optionRow && ! event.target.closest( '.wp-a11y-help-block' ) ) {
 			const previous = { ...settings };
-			const id = toggleBtn.dataset.optionId;
-			settings[ id ] = ! settings[ id ];
-			activeProfileId = null;
-			commit( previous );
-			return;
-		}
-
-		const stepperBtn = event.target.closest( '.wp-a11y-stepper' );
-		if ( stepperBtn ) {
-			const previous = { ...settings };
-			const id = stepperBtn.dataset.optionId;
-			const max = parseInt( stepperBtn.dataset.max, 10 ) || 0;
-			const current = parseInt( settings[ id ], 10 ) || 0;
-			settings[ id ] = ( current + 1 ) % ( max + 1 );
+			const id = optionRow.dataset.optionId;
+			if ( 'stepper' === optionRow.dataset.kind ) {
+				const max = parseInt( optionRow.dataset.max, 10 ) || 0;
+				const current = parseInt( settings[ id ], 10 ) || 0;
+				settings[ id ] = ( current + 1 ) % ( max + 1 );
+			} else {
+				settings[ id ] = ! settings[ id ];
+			}
 			activeProfileId = null;
 			commit( previous );
 			return;
