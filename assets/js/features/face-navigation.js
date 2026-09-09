@@ -46,21 +46,21 @@ let neutral = null;
 let sensitivity = 3;
 let captureNext = false;
 let cursorPos = { x: 0, y: 0 };
-let vel = { vx: 0, vy: 0 };
+const vel = { vx: 0, vy: 0 };
 const jawState = { dwellStart: null, active: false };
 const blinkState = { dwellStart: null, active: false };
 
 function hasAcknowledgedPrivacyNotice() {
 	try {
 		return window.localStorage.getItem( PRIVACY_ACK_KEY ) === '1';
-	} catch ( e ) {
+	} catch {
 		return false;
 	}
 }
 function rememberPrivacyAck() {
 	try {
 		window.localStorage.setItem( PRIVACY_ACK_KEY, '1' );
-	} catch ( e ) {
+	} catch {
 		/* consent won't be remembered - the dialog will just show again next time. */
 	}
 }
@@ -68,7 +68,7 @@ function rememberPrivacyAck() {
 function saveCalibration() {
 	try {
 		window.sessionStorage.setItem( CALIB_KEY, JSON.stringify( { neutral, sensitivity } ) );
-	} catch ( e ) {
+	} catch {
 		/* calibration just won't survive a page navigation this session. */
 	}
 }
@@ -82,7 +82,7 @@ function loadCalibration() {
 		if ( parsed && parsed.neutral && typeof parsed.neutral.m8 === 'number' ) {
 			return parsed;
 		}
-	} catch ( e ) {
+	} catch {
 		/* fall through to null. */
 	}
 	return null;
@@ -90,7 +90,7 @@ function loadCalibration() {
 function clearCalibration() {
 	try {
 		window.sessionStorage.removeItem( CALIB_KEY );
-	} catch ( e ) {
+	} catch {
 		/* nothing to do. */
 	}
 }
@@ -457,7 +457,7 @@ function stop() {
 	if ( landmarker ) {
 		try {
 			landmarker.close();
-		} catch ( e ) {
+		} catch {
 			/* already closed. */
 		}
 		landmarker = null;

@@ -79,8 +79,9 @@ class Stats {
 
 		$inserted = $wpdb->query(
 			$wpdb->prepare(
-				"INSERT INTO {$table_name} (featureid, counter, timemodified) VALUES (%s, 1, %d)
-				 ON DUPLICATE KEY UPDATE counter = counter + 1, timemodified = VALUES(timemodified)",
+				'INSERT INTO %i (featureid, counter, timemodified) VALUES (%s, 1, %d)
+				 ON DUPLICATE KEY UPDATE counter = counter + 1, timemodified = VALUES(timemodified)',
+				$table_name,
 				$featureid,
 				$now
 			)
@@ -99,7 +100,9 @@ class Stats {
 
 		$table_name = self::table_name();
 
-		return $wpdb->get_results( "SELECT featureid, counter, timemodified FROM {$table_name} ORDER BY counter DESC, featureid ASC" );
+		return $wpdb->get_results(
+			$wpdb->prepare( 'SELECT featureid, counter, timemodified FROM %i ORDER BY counter DESC, featureid ASC', $table_name )
+		);
 	}
 
 	/**
@@ -109,6 +112,6 @@ class Stats {
 		global $wpdb;
 
 		$table_name = self::table_name();
-		$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table_name ) );
 	}
 }

@@ -78,7 +78,7 @@ function readLocal( optionMeta ) {
 			return null;
 		}
 		return sanitize( JSON.parse( raw ), optionMeta );
-	} catch ( e ) {
+	} catch {
 		return null;
 	}
 }
@@ -86,7 +86,7 @@ function readLocal( optionMeta ) {
 function writeLocal( settings ) {
 	try {
 		window.localStorage.setItem( STORAGE_KEY, JSON.stringify( settings ) );
-	} catch ( e ) {
+	} catch {
 		/* storage unavailable (private mode, quota) - state stays in-memory only. */
 	}
 }
@@ -94,7 +94,7 @@ function writeLocal( settings ) {
 function clearLocal() {
 	try {
 		window.localStorage.removeItem( STORAGE_KEY );
-	} catch ( e ) {
+	} catch {
 		/* nothing to do. */
 	}
 }
@@ -134,7 +134,7 @@ export async function getSettings( optionMeta, config ) {
 	let serverSettings;
 	try {
 		serverSettings = sanitize( await restRequest( config, 'GET' ), optionMeta );
-	} catch ( e ) {
+	} catch {
 		// Network hiccup: fall back to whatever's local, or defaults.
 		return readLocal( optionMeta ) || defaults;
 	}
@@ -147,7 +147,7 @@ export async function getSettings( optionMeta, config ) {
 			const migrated = sanitize( await restRequest( config, 'POST', local ), optionMeta );
 			clearLocal();
 			return migrated;
-		} catch ( e ) {
+		} catch {
 			// Migration failed - keep using the local copy for this session,
 			// try again next load.
 			return local;
@@ -171,7 +171,7 @@ export async function saveSettings( settings, config ) {
 
 	try {
 		await restRequest( config, 'POST', settings );
-	} catch ( e ) {
+	} catch {
 		// Keep a local cache so the change isn't silently lost on a flaky
 		// connection - not authoritative, just a best-effort fallback.
 		writeLocal( settings );

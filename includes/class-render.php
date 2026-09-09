@@ -80,15 +80,15 @@ class Render {
 	 */
 	public static function profile_labels() {
 		return array(
-			'lowVision' => __( 'Baixa Visão', 'wp-a11y' ),
+			'lowVision'  => __( 'Baixa Visão', 'wp-a11y' ),
 			'colorBlind' => __( 'Daltonismo', 'wp-a11y' ),
-			'dyslexia'  => __( 'Dislexia', 'wp-a11y' ),
-			'adhd'      => __( 'TDAH/Foco', 'wp-a11y' ),
-			'senior'    => __( 'Idoso/Sênior', 'wp-a11y' ),
-			'epilepsy'  => __( 'Epilepsia', 'wp-a11y' ),
-			'motor'     => __( 'Deficiência Motora', 'wp-a11y' ),
-			'cognitive' => __( 'Cognitivo', 'wp-a11y' ),
-			'night'     => __( 'Modo Noturno', 'wp-a11y' ),
+			'dyslexia'   => __( 'Dislexia', 'wp-a11y' ),
+			'adhd'       => __( 'TDAH/Foco', 'wp-a11y' ),
+			'senior'     => __( 'Idoso/Sênior', 'wp-a11y' ),
+			'epilepsy'   => __( 'Epilepsia', 'wp-a11y' ),
+			'motor'      => __( 'Deficiência Motora', 'wp-a11y' ),
+			'cognitive'  => __( 'Cognitivo', 'wp-a11y' ),
+			'night'      => __( 'Modo Noturno', 'wp-a11y' ),
 		);
 	}
 
@@ -99,30 +99,30 @@ class Render {
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function build_categories( $settings ) {
-		$labels        = self::option_labels();
-		$cat_labels    = self::category_labels();
-		$default_open  = Options::category_default_open();
-		$categories    = array();
+		$labels       = self::option_labels();
+		$cat_labels   = self::category_labels();
+		$default_open = Options::category_default_open();
+		$categories   = array();
 
 		foreach ( Options::grouped_by_category() as $cat_id => $options ) {
 			$rows = array();
 
 			foreach ( $options as $option ) {
-				$id       = $option['id'];
-				$is_step  = ( 'stepper' === $option['kind'] );
-				$value    = isset( $settings[ $id ] ) ? $settings[ $id ] : ( $is_step ? 0 : false );
+				$id      = $option['id'];
+				$is_step = ( 'stepper' === $option['kind'] );
+				$value   = isset( $settings[ $id ] ) ? $settings[ $id ] : ( $is_step ? 0 : false );
 
 				$rows[] = array(
-					'id'       => $id,
-					'kind'     => $option['kind'],
+					'id'        => $id,
+					'kind'      => $option['kind'],
 					'isstepper' => $is_step,
 					'istoggle'  => ! $is_step,
-					'label'    => isset( $labels[ $id ] ) ? $labels[ $id ] : $id,
-					'cat'      => $cat_id,
-					'effect'   => $option['effect'],
-					'max'      => $is_step ? (int) $option['max'] : 0,
-					'value'    => $is_step ? (int) $value : 0,
-					'active'   => $is_step ? ( (int) $value > 0 ) : (bool) $value,
+					'label'     => isset( $labels[ $id ] ) ? $labels[ $id ] : $id,
+					'cat'       => $cat_id,
+					'effect'    => $option['effect'],
+					'max'       => $is_step ? (int) $option['max'] : 0,
+					'value'     => $is_step ? (int) $value : 0,
+					'active'    => $is_step ? ( (int) $value > 0 ) : (bool) $value,
 				);
 			}
 
@@ -164,12 +164,12 @@ class Render {
 			);
 
 			$rows[] = array(
-				'id'    => $profile['id'],
-				'label' => isset( $labels[ $profile['id'] ] ) ? $labels[ $profile['id'] ] : $profile['id'],
-				'apply' => wp_json_encode( $profile['apply'] ),
-				'bg'    => $tone['bg'],
-				'text'  => $tone['text'],
-				'icon'  => $tone['icon'],
+				'id'     => $profile['id'],
+				'label'  => isset( $labels[ $profile['id'] ] ) ? $labels[ $profile['id'] ] : $profile['id'],
+				'apply'  => wp_json_encode( $profile['apply'] ),
+				'bg'     => $tone['bg'],
+				'text'   => $tone['text'],
+				'icon'   => $tone['icon'],
 				'border' => $tone['border'],
 			);
 		}
@@ -267,8 +267,8 @@ class Render {
 	 * localStorage, read synchronously here same as Phase 1.
 	 */
 	public static function render_nofouc_script() {
-		$is_logged_in     = is_user_logged_in();
-		$server_settings   = $is_logged_in ? Manager::get_current_user_settings() : null;
+		$is_logged_in    = is_user_logged_in();
+		$server_settings = $is_logged_in ? Manager::get_current_user_settings() : null;
 		?>
 		<script id="wp-a11y-nofouc">
 		(function () {

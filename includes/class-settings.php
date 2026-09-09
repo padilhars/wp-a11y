@@ -27,27 +27,27 @@ class Settings {
 	public static function defaults() {
 		return array(
 			// General.
-			'enabled'          => true,
-			'showforguests'    => true,
-			'excludedpages'    => '',
-			'enabledfeatures'  => Options::all_ids(),
+			'enabled'               => true,
+			'showforguests'         => true,
+			'excludedpages'         => '',
+			'enabledfeatures'       => Options::all_ids(),
 			// FAB.
-			'fabposition'      => 'bottom-right',
-			'fabicon'          => 'default',
-			'fabshape'         => 'circle',
+			'fabposition'           => 'bottom-right',
+			'fabicon'               => 'default',
+			'fabshape'              => 'circle',
 			// Panel.
-			'panelformat'      => 'popover',
-			'density'          => 'regular',
-			'showprofiles'     => true,
-			'footertext'       => '',
+			'panelformat'           => 'popover',
+			'density'               => 'regular',
+			'showprofiles'          => true,
+			'footertext'            => '',
 			// Colors.
-			'accent'                 => '#3b82f6',
-			'highlighttitlescolor'   => '#eab308',
-			'highlightlinkscolor'    => '#3b82f6',
-			'highlightbuttonscolor'  => '#f97316',
-			'readingguidecolor'      => '#3b82f6',
+			'accent'                => '#3b82f6',
+			'highlighttitlescolor'  => '#eab308',
+			'highlightlinkscolor'   => '#3b82f6',
+			'highlightbuttonscolor' => '#f97316',
+			'readingguidecolor'     => '#3b82f6',
 			// Stats.
-			'collectstats'     => false,
+			'collectstats'          => false,
 		);
 	}
 
@@ -109,9 +109,9 @@ class Settings {
 		$clean['showforguests'] = ! empty( $input['showforguests'] );
 
 		if ( isset( $input['excludedpages'] ) ) {
-			$lines = preg_split( '/\r\n|\r|\n/', (string) $input['excludedpages'] );
-			$lines = array_map( 'trim', $lines );
-			$lines = array_filter( $lines, static fn( $line ) => '' !== $line );
+			$lines                  = preg_split( '/\r\n|\r|\n/', (string) $input['excludedpages'] );
+			$lines                  = array_map( 'trim', $lines );
+			$lines                  = array_filter( $lines, static fn( $line ) => '' !== $line );
 			$clean['excludedpages'] = implode( "\n", array_map( 'sanitize_text_field', $lines ) );
 		}
 

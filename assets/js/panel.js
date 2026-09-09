@@ -38,7 +38,7 @@ function readConfig() {
 	}
 	try {
 		return JSON.parse( el.textContent );
-	} catch ( e ) {
+	} catch {
 		return { restUrl: '', nonce: '', isLoggedIn: false, collectStatsEnabled: false, featuresUrl: '' };
 	}
 }

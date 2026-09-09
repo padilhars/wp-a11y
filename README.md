@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0-3 concluídas.**
+**Fases 0-4 concluídas.**
 
 Fase 0 (esqueleto de dados):
 
@@ -40,6 +40,14 @@ Fase 3 (módulos avançados, um de cada vez — concluída, 10/10):
 - **Comandos por Voz** (`voiceCommands`): controla o painel e ~35 comandos falados (tipografia, cores, navegação, rolagem) via `SpeechRecognition` nativo do navegador — o áudio é enviado a um serviço remoto do próprio navegador (não deste site), por isso exige aviso de privacidade e consentimento explícito antes de começar, com uma pílula de status/feedback na tela (`voice-commands.js`).
 - **Navegação por Face** (`faceNavigation`): move um cursor virtual com movimentos da cabeça e "clica" abrindo a boca ou piscando, via MediaPipe FaceLandmarker rodando 100% no navegador — a imagem da câmera nunca é enviada a lugar nenhum. Os dois arquivos de terceiros necessários (bundle de visão + modelo) são baixados ao vivo e verificados por SHA-256 antes do uso, fechando o mesmo gap TOCTOU que o `local_a11y` trata; exige aviso de privacidade/consentimento antes de pedir acesso à câmera (`face-navigation.js`).
 - Cada módulo é importado dinamicamente (`import()` por URL, sem bundler) só na primeira ativação real da opção — nada é baixado à toa. Todos testados ligando/desligando de verdade num Chrome headless (efeito aplicado E revertido corretamente, posições/transformações conferidas, digitação de verdade num campo de teste, sem erro de console) — Comandos por Voz e Navegação por Face testados com `SpeechRecognition`/câmera e MediaPipe simulados (mock), já que o ambiente de CI/headless não tem microfone/câmera reais nem pode validar o hash de um modelo de verdade sem rede liberada para o CDN. Ver DECISIONS.md D10 sobre um falso alarme de bug encontrado (e descartado) durante esse teste.
+
+Fase 4 (privacidade + auditoria de segurança/qualidade):
+
+- **Privacy API** (`includes/class-privacy.php`): exporter e eraser da única preferência pessoal que o plugin guarda (`wp_a11y_settings`, usermeta), registrados em Ferramentas > Exportar/Apagar Dados Pessoais; texto sugerido de política de privacidade (`wp_add_privacy_policy_content()`) cobrindo a preferência em si e os dois recursos cujo *navegador* conversa com um terceiro quando ativados (Comandos por Voz → serviço de reconhecimento de fala do fabricante do navegador; Navegação por Face → dois arquivos baixados ao vivo do MediaPipe, imagem da câmera nunca sai do navegador). A tabela de estatísticas agregadas não é declarada — não tem coluna que identifique ninguém. Testado com um usuário real via `wp eval`: exportação/exclusão confirmadas ponta a ponta. Ver DECISIONS.md D11.
+- **Auditoria PHPCS** (`WordPress-Extra`): 3 erros reais encontrados e corrigidos em `class-stats.php` (nome de tabela interpolado direto na query em vez do placeholder `%i` do `$wpdb->prepare()` — não era injeção de verdade na prática, mas corrigido mesmo assim; um comentário de supressão existente também apontava para o código de sniff errado). Verificado com uma ativação de teste de verdade no banco. Os outros 57 achados eram só formatação (corrigida automaticamente com `phpcbf`, comportamento reconfirmado depois).
+- **Auditoria ESLint**: zero erros reais em `assets/js/**`; 18 avisos cosméticos limpos (blocos `catch` com a exceção nunca usada convertidos para `catch {}`, um `let` trocado por `const`). Comportamento reconfirmado com os mesmos testes mock de Comandos por Voz/Navegação por Face.
+- **XSS do JSON inline** (`class-render.php`): já seguro por construção — os únicos dados de usuário embutidos em `<script>` (a preferência do usuário logado, no script anti-FOUC) já passam por `Manager::sanitize_settings()`, que só produz booleanos e inteiros limitados por opção, nunca uma string livre; não havia nada para um atacante injetar independentemente da forma de escaping usada.
+- Ver DECISIONS.md D12 para o relato completo da auditoria.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 

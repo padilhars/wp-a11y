@@ -77,10 +77,10 @@ class Manager {
 			$raw = array();
 		}
 
-		$defaults = self::get_default_settings();
+		$defaults    = self::get_default_settings();
 		$stepper_max = self::get_stepper_max();
-		$enabled  = array_flip( Settings::enabled_features() );
-		$clean    = array();
+		$enabled     = array_flip( Settings::enabled_features() );
+		$clean       = array();
 
 		foreach ( $defaults as $id => $default_value ) {
 			if ( ! isset( $enabled[ $id ] ) ) {

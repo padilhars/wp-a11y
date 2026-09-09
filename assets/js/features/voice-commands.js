@@ -22,7 +22,7 @@ let feedbackTimer = null;
 function hasAcknowledgedPrivacyNotice() {
 	try {
 		return window.localStorage.getItem( PRIVACY_ACK_KEY ) === '1';
-	} catch ( e ) {
+	} catch {
 		return false;
 	}
 }
@@ -30,7 +30,7 @@ function hasAcknowledgedPrivacyNotice() {
 function rememberPrivacyAck() {
 	try {
 		window.localStorage.setItem( PRIVACY_ACK_KEY, '1' );
-	} catch ( e ) {
+	} catch {
 		/* consent won't be remembered - the dialog will just show again next time. */
 	}
 }
@@ -187,7 +187,7 @@ function start( actions ) {
 		if ( recognition ) {
 			try {
 				recognition.start();
-			} catch ( e ) {
+			} catch {
 				/* already starting/started - browser will fire another onend soon. */
 			}
 		}
@@ -206,7 +206,7 @@ function stop() {
 		recognition.onend = null;
 		try {
 			recognition.stop();
-		} catch ( e ) {
+		} catch {
 			/* already stopped. */
 		}
 		recognition = null;

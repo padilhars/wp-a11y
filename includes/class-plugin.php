@@ -27,6 +27,7 @@ class Plugin {
 		add_action( 'admin_menu', array( Stats_Page::class, 'register' ), 20 );
 		add_action( 'rest_api_init', array( Rest::class, 'register_routes' ) );
 
+		Privacy::register();
 		Assets::register();
 	}
 }
