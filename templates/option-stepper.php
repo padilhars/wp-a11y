@@ -2,7 +2,7 @@
 /**
  * A single stepper (multi-level) option row.
  *
- * Expects: $option (array: id, label, value, max, active, effect).
+ * Expects: $option (array: id, iconsvg, label, desc, value, max, active, effect).
  *
  * @package WP_A11y
  */
@@ -11,8 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="wp-a11y-option" data-option-id="<?php echo esc_attr( $option['id'] ); ?>" data-kind="stepper" data-max="<?php echo esc_attr( $option['max'] ); ?>" data-effect="<?php echo esc_attr( $option['effect'] ); ?>">
-	<span class="wp-a11y-option__label"><?php echo esc_html( $option['label'] ); ?></span>
+<div class="wp-a11y-option<?php echo $option['active'] ? ' wp-a11y-option--active' : ''; ?>" data-option-id="<?php echo esc_attr( $option['id'] ); ?>" data-kind="stepper" data-max="<?php echo esc_attr( $option['max'] ); ?>" data-effect="<?php echo esc_attr( $option['effect'] ); ?>">
+	<span class="wp-a11y-option__icon"><?php echo $option['iconsvg']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted inline SVG from Icons::svg(), not user input. ?></span>
+	<span class="wp-a11y-option__text">
+		<span class="wp-a11y-option__label"><?php echo esc_html( $option['label'] ); ?></span>
+		<?php if ( $option['desc'] ) : ?>
+			<span class="wp-a11y-option__desc"><?php echo esc_html( $option['desc'] ); ?></span>
+		<?php endif; ?>
+	</span>
 	<button
 		type="button"
 		class="wp-a11y-stepper<?php echo $option['active'] ? ' is-active' : ''; ?>"

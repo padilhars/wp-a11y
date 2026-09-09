@@ -2,6 +2,20 @@
 
 Todas as mudanças notáveis do `wp-a11y` são documentadas aqui. Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [1.0.1] - 2026-09-09
+
+### Fixed
+
+- Ícones, descrições e botões de ajuda das opções nunca eram renderizados, mesmo já existindo em `Options::all()` desde a Fase 0 (`icon`/`desckey`/`hashelp`) - `Render::build_categories()` descartava os três campos ao montar o contexto passado aos templates. Corrigido com um novo registro de ícones (`includes/class-icons.php`, mesmo conjunto Lucide já referenciado) e textos de descrição/ajuda escritos para as opções que precisavam.
+- Cabeçalho do painel, cabeçalhos de categoria/perfis e cards de perfil ganharam o mesmo tratamento visual (selo/ícone, versalete, selo de check) que o painel do `local_a11y` (Moodle) já tinha - identidade visual compartilhada entre os dois ports, pedido explícito do usuário.
+- Um bug de flexbox real encontrado durante essa verificação: descrições longas empurravam o botão de ajuda/switch para uma segunda linha inteira em vez de só a própria descrição quebrar - `.wp-a11y-option__text` usava `flex: 1 1 auto` em vez de `flex: 1` (`1 1 0%`).
+
+### Added
+
+- Fonte `Inter` auto-hospedada (`assets/fonts/inter-{400,700}.woff2`) para a UI própria do widget (painel, pílulas de status, teclado virtual, HUD de navegação por face) - mesma fonte que o painel do Moodle usa.
+
+Ver DECISIONS.md D14 para o relato completo.
+
 ## [1.0.0] - 2026-09-09
 
 Port completo do plugin de acessibilidade [`local_a11y`](https://github.com/padilhars/a11y) (Moodle) para WordPress, do zero até uma versão de verdade (Fases 0-5). Nunca houve uma versão publicada antes desta - `0.1.0` era só o placeholder inicial do esqueleto do plugin.

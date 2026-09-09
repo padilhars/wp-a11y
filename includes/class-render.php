@@ -59,6 +59,47 @@ class Render {
 	}
 
 	/**
+	 * Short description text for the few options whose label alone isn't
+	 * self-explanatory (mirrors local_a11y's desckey - only options with a
+	 * non-null desckey there get one here too).
+	 *
+	 * @return array<string, string>
+	 */
+	public static function option_desc_labels() {
+		return array(
+			'colorChange'    => __( 'Filtros para daltonismo', 'wp-a11y' ),
+			'focusMode'      => __( 'Simplifica a página', 'wp-a11y' ),
+			'screenReader'   => __( 'Texto para fala', 'wp-a11y' ),
+			'faceNavigation' => __( 'Controle o cursor com movimentos da cabeça', 'wp-a11y' ),
+		);
+	}
+
+	/**
+	 * Help ("?") block content for every option with `hashelp = true` in
+	 * Options::all() - all of them are toggle-kind options (never a
+	 * stepper - see build_categories(), same restriction local_a11y's D76
+	 * documents: a stepper row is itself the sole focusable control, so a
+	 * nested help button would violate axe's nested-interactive rule).
+	 *
+	 * @return array<string, string> Option id => plain-text help sentence.
+	 */
+	public static function option_help_content() {
+		return array(
+			'bionicReading'   => __( 'Deixa em negrito a primeira metade de cada palavra, criando um ponto de ancoragem visual mais rápido para os olhos.', 'wp-a11y' ),
+			'hideImages'      => __( 'Oculta imagens, vídeos e iframes da página, mantendo o restante do conteúdo.', 'wp-a11y' ),
+			'pauseAnimations' => __( 'Pausa animações CSS na página.', 'wp-a11y' ),
+			'silenceMedia'    => __( 'Muta todo áudio e vídeo da página, incluindo mídia que começa a tocar depois de ativado.', 'wp-a11y' ),
+			'readingGuide'    => __( 'Uma faixa horizontal destacada acompanha o mouse, ajudando a manter a linha de leitura.', 'wp-a11y' ),
+			'readingMask'     => __( 'Escurece a área acima e abaixo do cursor, isolando a linha de texto sendo lida.', 'wp-a11y' ),
+			'magnifier'       => __( 'Uma lente circular amplia o conteúdo sob o cursor ao mover o mouse.', 'wp-a11y' ),
+			'screenReader'    => __( 'Passe o mouse sobre um texto para destacá-lo; clique para ouvi-lo em voz alta.', 'wp-a11y' ),
+			'virtualKeyboard' => __( 'Um teclado na tela aparece automaticamente ao focar um campo de texto da página.', 'wp-a11y' ),
+			'voiceCommands'   => __( 'Controle o painel e a página por comandos de voz - requer autorização do microfone.', 'wp-a11y' ),
+			'faceNavigation'  => __( 'Controle o cursor com movimentos da cabeça e clique abrindo a boca ou piscando - requer autorização da câmera.', 'wp-a11y' ),
+		);
+	}
+
+	/**
 	 * Human-readable labels for every category id.
 	 *
 	 * @return array<string, string>
@@ -100,7 +141,10 @@ class Render {
 	 */
 	private static function build_categories( $settings ) {
 		$labels       = self::option_labels();
+		$descs        = self::option_desc_labels();
+		$help         = self::option_help_content();
 		$cat_labels   = self::category_labels();
+		$cat_icons    = Icons::category_icons();
 		$default_open = Options::category_default_open();
 		$categories   = array();
 
@@ -111,23 +155,30 @@ class Render {
 				$id      = $option['id'];
 				$is_step = ( 'stepper' === $option['kind'] );
 				$value   = isset( $settings[ $id ] ) ? $settings[ $id ] : ( $is_step ? 0 : false );
+				$hashelp = ! $is_step && ! empty( $option['hashelp'] ) && isset( $help[ $id ] );
 
 				$rows[] = array(
 					'id'        => $id,
 					'kind'      => $option['kind'],
 					'isstepper' => $is_step,
 					'istoggle'  => ! $is_step,
+					'iconsvg'   => Icons::svg( $option['icon'], 18 ),
 					'label'     => isset( $labels[ $id ] ) ? $labels[ $id ] : $id,
+					'desc'      => isset( $descs[ $id ] ) ? $descs[ $id ] : null,
 					'cat'       => $cat_id,
 					'effect'    => $option['effect'],
 					'max'       => $is_step ? (int) $option['max'] : 0,
 					'value'     => $is_step ? (int) $value : 0,
 					'active'    => $is_step ? ( (int) $value > 0 ) : (bool) $value,
+					'hashelp'   => $hashelp,
+					'helplabel' => $hashelp ? __( 'Ajuda', 'wp-a11y' ) : null,
+					'helptext'  => $hashelp ? $help[ $id ] : null,
 				);
 			}
 
 			$categories[] = array(
 				'id'          => $cat_id,
+				'iconsvg'     => Icons::svg( isset( $cat_icons[ $cat_id ] ) ? $cat_icons[ $cat_id ] : '', 15 ),
 				'label'       => isset( $cat_labels[ $cat_id ] ) ? $cat_labels[ $cat_id ] : $cat_id,
 				'isopen'      => in_array( $cat_id, $default_open, true ),
 				'options'     => $rows,
@@ -164,13 +215,15 @@ class Render {
 			);
 
 			$rows[] = array(
-				'id'     => $profile['id'],
-				'label'  => isset( $labels[ $profile['id'] ] ) ? $labels[ $profile['id'] ] : $profile['id'],
-				'apply'  => wp_json_encode( $profile['apply'] ),
-				'bg'     => $tone['bg'],
-				'text'   => $tone['text'],
-				'icon'   => $tone['icon'],
-				'border' => $tone['border'],
+				'id'           => $profile['id'],
+				'iconsvg'      => Icons::svg( $profile['icon'], 16 ),
+				'checkiconsvg' => Icons::svg( 'check', 9 ),
+				'label'        => isset( $labels[ $profile['id'] ] ) ? $labels[ $profile['id'] ] : $profile['id'],
+				'apply'        => wp_json_encode( $profile['apply'] ),
+				'bg'           => $tone['bg'],
+				'text'         => $tone['text'],
+				'icon'         => $tone['icon'],
+				'border'       => $tone['border'],
 			);
 		}
 
@@ -188,14 +241,22 @@ class Render {
 		$activecount = Manager::count_active( $settings );
 
 		return array(
-			'appearance'   => $appearance,
-			'effectcolors' => Settings::get_effect_colors(),
-			'activecount'  => $activecount,
-			'hasactive'    => $activecount > 0,
-			'showprofiles' => $appearance['showprofiles'],
-			'profiles'     => self::build_profiles(),
-			'categories'   => self::build_categories( $settings ),
-			'footertext'   => Settings::footer_text(),
+			'appearance'       => $appearance,
+			'effectcolors'     => Settings::get_effect_colors(),
+			'activecount'      => $activecount,
+			'hasactive'        => $activecount > 0,
+			'showprofiles'     => $appearance['showprofiles'],
+			'profiles'         => self::build_profiles(),
+			'categories'       => self::build_categories( $settings ),
+			'footertext'       => Settings::footer_text(),
+			'badgeiconsvg'     => Icons::svg( 'accessibility', 20 ),
+			'refreshiconsvg'   => Icons::svg( 'refresh', 16 ),
+			'closeiconsvg'     => Icons::svg( 'close', 16 ),
+			'searchiconsvg'    => Icons::svg( 'search', 16 ),
+			'sparklesiconsvg'  => Icons::svg( 'sparkles', 15 ),
+			'checkiconsvg'     => Icons::svg( 'check', 10 ),
+			'chevroniconsvg'   => Icons::svg( 'chevronDown', 14 ),
+			'profilessublabel' => __( 'Ative configurações otimizadas com um clique', 'wp-a11y' ),
 		);
 	}
 

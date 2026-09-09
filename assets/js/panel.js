@@ -255,6 +255,17 @@ export async function init() {
 	} );
 
 	panel.addEventListener( 'click', ( event ) => {
+		const helpBtn = event.target.closest( '.wp-a11y-help-btn' );
+		if ( helpBtn ) {
+			const block = helpBtn.closest( '.wp-a11y-option' ).querySelector( '.wp-a11y-help-block' );
+			const expanded = helpBtn.getAttribute( 'aria-expanded' ) === 'true';
+			helpBtn.setAttribute( 'aria-expanded', expanded ? 'false' : 'true' );
+			if ( block ) {
+				block.hidden = expanded;
+			}
+			return;
+		}
+
 		const toggleBtn = event.target.closest( '.wp-a11y-toggle' );
 		if ( toggleBtn ) {
 			const previous = { ...settings };

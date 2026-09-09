@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0-5 concluídas — v1.0.0.**
+**Fases 0-5 concluídas — v1.0.1.**
 
 Fase 0 (esqueleto de dados):
 
@@ -56,6 +56,8 @@ Fase 5 (polimento/documentação):
 - Capturas de tela reais (`docs/screenshots/`, ver abaixo) - painel, perfis, categorias e um efeito realmente aplicado (não só mockup).
 - Versão promovida de `0.1.0` para `1.0.0` - mesmo critério do `local_a11y` (D65 lá): cortar uma versão de verdade num marco significativo (Fases 0-5 completas) em vez de deixar acumulando como "não lançado" indefinidamente.
 - Empacotamento: `bin/build-zip.sh` (novo) gera `wp-a11y.zip` pronto para instalar via wp-admin, excluindo arquivos só de desenvolvimento (`.git`, `DECISIONS.md`, `docs/`, `bin/`).
+
+**v1.0.1** — paridade visual com o painel do `local_a11y` (Moodle): ícones/descrições/botões de ajuda das opções (já existiam nos dados desde a Fase 0, mas nunca chegavam ao HTML - `includes/class-icons.php` novo), cabeçalho/categorias/perfis com o mesmo tratamento visual (selo, versalete, ícone), fonte `Inter` auto-hospedada. Ver DECISIONS.md D14.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 
