@@ -2,6 +2,15 @@
 
 Todas as mudanças notáveis do `wp-a11y` são documentadas aqui. Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
+## [1.0.5] - 2026-09-09
+
+### Fixed
+
+- Inverter Cores e Filtro de Luz Azul (e por extensão Saturação/Mudar Cores) praticamente não tinham efeito visível: `#wp-a11y-content-wrap` não tinha `background-color` próprio, então o `filter` (invert/saturate/matriz de daltonismo) não tinha nada opaco para transformar - o fundo real da página, pintado atrás do wrapper, aparecia sem filtro nenhum. Corrigido com `background-color: inherit`.
+- Tamanho do Texto só escalava parágrafos simples - menu de navegação e rodapé ficavam do tamanho original, porque temas de blocos modernos fixam `font-size` explícito em blocos aninhados, quebrando a herança relativa que a opção usava. Trocado para `zoom`, que escala a renderização inteira independente de herança CSS.
+
+Ver DECISIONS.md D18.
+
 ## [1.0.4] - 2026-09-09
 
 ### Fixed

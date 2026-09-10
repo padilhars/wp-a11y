@@ -71,6 +71,19 @@
 /* ---------------------------------------------------------------------- */
 
 #wp-a11y-content-wrap {
+	/* `filter` renders this element + its subtree as one isolated layer,
+	   then composites that layer against whatever is behind it - a
+	   *transparent* area of the layer lets what's behind (the theme's
+	   real page background, painted on <body> or <html>, not on this
+	   wrapper) show through completely unfiltered. Without an opaque
+	   background of its own, invert()/saturate()/the color-blind matrix
+	   only ever touch foreground content (text, borders) while the page
+	   background stays untouched - e.g. invert-colors looked like almost
+	   nothing happened (near-invisible pale text on a still-white page)
+	   instead of the intended full dark-mode flip. `inherit` picks up
+	   the theme's *actual* body background (light or dark) rather than
+	   hardcoding a color that would be wrong on a dark-themed site. */
+	background-color: inherit;
 	filter: var( --wp-a11y-f-invert, ) var( --wp-a11y-f-saturate, ) var( --wp-a11y-f-color, ) var( --wp-a11y-f-bluelight, );
 }
 
@@ -153,10 +166,23 @@ body.a11y-highlight-buttons #wp-a11y-content-wrap input[type='button'] {
 	box-shadow: 0 0 0 5px color-mix( in srgb, var( --wp-a11y-highlightbuttons, #f97316 ) 25%, transparent );
 }
 
-body.a11y-text-size-1 #wp-a11y-content-wrap { font-size: 112%; }
-body.a11y-text-size-2 #wp-a11y-content-wrap { font-size: 125%; }
-body.a11y-text-size-3 #wp-a11y-content-wrap { font-size: 150%; }
-body.a11y-text-size-4 #wp-a11y-content-wrap { font-size: 200%; }
+/* `zoom` (not a `font-size` percentage on the wrapper): block themes like
+   Twenty Twenty-Five set an explicit font-size on many individual nested
+   blocks (nav items, site title, template parts...), which breaks a plain
+   relative font-size inheriting down from one ancestor - it only reaches
+   descendants that never set their own font-size, silently excluding
+   large chunks of the page (nav/footer text stayed unscaled). `zoom`
+   scales the rendered box of the whole subtree directly, unaffected by
+   how many descendants declare their own explicit font-size - same
+   effect other options here get via `#wp-a11y-content-wrap * { ... }`
+   + `!important` (line-height/letter-spacing/word-spacing/text-align
+   below), just achieved differently since "make every element the exact
+   same font-size" would flatten the heading/paragraph hierarchy that
+   `zoom` preserves. */
+body.a11y-text-size-1 #wp-a11y-content-wrap { zoom: 1.12; }
+body.a11y-text-size-2 #wp-a11y-content-wrap { zoom: 1.25; }
+body.a11y-text-size-3 #wp-a11y-content-wrap { zoom: 1.5; }
+body.a11y-text-size-4 #wp-a11y-content-wrap { zoom: 2; }
 
 body.a11y-line-height-1 #wp-a11y-content-wrap * { line-height: 1.5 !important; }
 body.a11y-line-height-2 #wp-a11y-content-wrap * { line-height: 1.8 !important; }

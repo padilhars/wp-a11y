@@ -4,7 +4,7 @@ Plugin de acessibilidade para WordPress — port do plugin [`local_a11y`](https:
 
 ## Status
 
-**Fases 0-5 concluídas — v1.0.4.**
+**Fases 0-5 concluídas — v1.0.5.**
 
 Fase 0 (esqueleto de dados):
 
@@ -64,6 +64,8 @@ Fase 5 (polimento/documentação):
 **v1.0.3** — steppers agora mostram o nome do nível ativo (ex.: "Lexend", "Alto Contraste") em vez de uma fração genérica ("1/2"). Ver DECISIONS.md D16.
 
 **v1.0.4** — rodapé do painel reestruturado para ficar idêntico ao do `local_a11y` (layout texto+badge "Alt+A" na mesma linha, mesmo texto padrão). Ver DECISIONS.md D17.
+
+**v1.0.5** — Inverter Cores/Filtro de Luz Azul (fundo do wrapper de conteúdo sem cor própria, filtro não tinha o que transformar) e Tamanho do Texto (menu/rodapé não escalavam, só parágrafos) corrigidos de verdade. Ver DECISIONS.md D18.
 
 **Nunca misturar este repositório com o `local_a11y`/Moodle** — o código Moodle é usado só como referência de leitura. Fontes de terceiros (OFL) foram baixadas de novo das fontes originais, não copiadas de lá — ver `assets/fonts/THIRDPARTY.md`.
 
